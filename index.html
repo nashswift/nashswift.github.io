@@ -178,7 +178,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-06-07 00:09:46" itemprop="dateModified" datetime="2023-06-07T00:09:46+08:00">2023-06-07</time>
+                <time title="修改时间：2023-06-07 11:20:31" itemprop="dateModified" datetime="2023-06-07T11:20:31+08:00">2023-06-07</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -311,7 +311,7 @@ cost(f(x),y)=-ylog(f(x))-(1-y)log(1-f(x))</script><p>最终<strong>优化目标<
 </ul>
 <p>第t+1轮迭代解的更新公式是：</p>
 <script type="math/tex; mode=display">
-\hat{w}^{t+1}:=\hat{w}^t-\Big(\frac{\partial^2J(\hat{w})}{\partial{\hat{w}}\partial{\hat{w}^T}}\Big)^{-1}\frac{\partial{J(\hat{w})}}{\partial(\hat{w})}</script><blockquote>
+\hat{w}^{t+1}:=\hat{w}^t-\Big(\frac{\partial^2J(\hat{w})}{\partial{\hat{w}}\partial{\hat{w}^T}}\Big)^{-1}\frac{\partial{J(\hat{w})}}{\partial\hat{w}}</script><blockquote>
 <p>其他高级优化算法</p>
 <ul>
 <li>共轭梯度法</li>
@@ -335,11 +335,12 @@ P_X(x|\theta)=h(x)exp(\eta(\theta)T(x)-A(\theta))</script><p>其中：x是数据
 <p><strong>2. 广义线性模型（GLM）的运用</strong>：</p>
 <p>GLM的<strong>三个假设</strong>：</p>
 <ol>
-<li><p><script type="math/tex">y|x;\hat{w}</script>满足一个以<script type="math/tex">\eta</script>为自然参数的指数族分布，那么可以求得<script type="math/tex">\eta</script>的表达式</p>
+<li><p><script type="math/tex">y|x;\hat{w}</script>满足一个以<script type="math/tex">\eta</script>为自然参数的指数族分布，那么可以求得<script type="math/tex">\eta</script>的表达式；</p>
 </li>
-<li><p>给定x，我们的目标是预测T(y)的期望值，大多数情况下可以认为T(y)=y，因此我们实际上是要确定一个h(x)使得h(x)=E[y|x]</p>
+<li><p>给定x，我们的目标是预测T(y)的期望值，大多数情况下可以认为T(y)=y，因此我们实际上是要确定一个h(x)使得h(x)=E[y|x]；</p>
 </li>
-<li><script type="math/tex; mode=display">\eta=\hat{w}^Tx</script></li>
+<li><p>重新表示<script type="math/tex">\eta=\hat{w}^Tx</script>。</p>
+</li>
 </ol>
 <p><strong>具体步骤</strong>：</p>
 <p>Step1：核心假设<script type="math/tex">y\sim exponential family</script></p>
