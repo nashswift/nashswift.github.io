@@ -192,6 +192,209 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/06/08/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%BA%94%E7%AB%A0-%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="nashswift">
+      <meta itemprop="description" content="What matters is not your ability, but your choice.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="长野原烟花店">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/06/08/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%BA%94%E7%AB%A0-%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" class="post-title-link" itemprop="url">周志华《机器学习》（AKA：西瓜书）笔记整理-第五章-神经网络</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-06-08 22:00:37" itemprop="dateCreated datePublished" datetime="2023-06-08T22:00:37+08:00">2023-06-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-06-09 00:36:55" itemprop="dateModified" datetime="2023-06-09T00:36:55+08:00">2023-06-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ML-study/" itemprop="url" rel="index"><span itemprop="name">ML study</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="5-1-神经元模型"><a href="#5-1-神经元模型" class="headerlink" title="5.1 神经元模型"></a>5.1 神经元模型</h1><p><strong>神经网络（neural network）</strong>：是一个强大的机器学习方法，由具有适应性的简单单元——<strong>神经元（neuron）</strong>组成的广泛并行互连的网络，能够模拟生物神经系统对真实世界物体作出交互式反应，是<strong>深度学习（deep learning）</strong>的基础。</p>
+<p><strong>M-P神经元模型</strong>：神经元接收到其他n个神经元传递进来的输入信号，这些输入信号通过带权重的连接（connection）进行传递，并将收到的总输入值与神经元阈值相比较，最后通过<strong>激活函数（active function）</strong>处理以产生神经元的输出。把许多这样的神经元按照一定的层次结构连接起来，就得到了神经网络。</p>
+<p><img src="/2023/06/08/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%BA%94%E7%AB%A0-%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/M-P神经元模型.png" alt="M-P神经元模型"></p>
+<p><strong>激活函数（active function）</strong>：常见的激活函数有</p>
+<ul>
+<li><strong>单位阶跃函数</strong>：将输入值映射为0（神经元抑制），1（神经元兴奋）。但该函数具有<strong>不连续、不光滑</strong>等不好的性质，不便于后续求导。</li>
+<li><strong>对率函数（logistic function）/挤压函数（squashing function）</strong>：是一种<strong>“Sigmoid”函数</strong>，将较大范围内变化的输入值挤压到(0,1)输出值范围内，且函数处处可导，因此更为常用。</li>
+</ul>
+<p><img src="/2023/06/08/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%BA%94%E7%AB%A0-%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/典型的神经元激活函数.png" alt="典型的神经元激活函数"></p>
+<h1 id="5-2-感知机与多层网络"><a href="#5-2-感知机与多层网络" class="headerlink" title="5.2 感知机与多层网络"></a>5.2 感知机与多层网络</h1><h2 id="5-2-1-感知机"><a href="#5-2-1-感知机" class="headerlink" title="5.2.1 感知机"></a>5.2.1 感知机</h2><p><strong>感知机（perceptron）</strong>：由两层神经元组成，输入层接受外界输入信号后传递给输出层，输出层是M-P神经元（也称为阈值逻辑单元）。注意到<script type="math/tex">y=f(\sum_iw_ix_i-\theta)</script>，将阈值<script type="math/tex">\theta</script>看作输入为-1的哑节点（dummy node），对应的连接权重为<script type="math/tex">w_{n+1}</script>，这样权重和阈值的学习就可以统一为权重的学习。</p>
+<p><img src="/2023/06/08/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%BA%94%E7%AB%A0-%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/感知机.png" alt="感知机"></p>
+<p><strong>感知机的学习规则</strong>：利用梯度下降法进行调整</p>
+<script type="math/tex; mode=display">
+\begin{split}
+w_i \leftarrow w_i+\Delta w_i\\
+\Delta w_i=\eta(y-\hat{y})x_i
+\end{split}</script><blockquote>
+<p>感知机只有输出层神经元进行激活函数处理，即只有一层功能神经元（functional neuron），其学习能力非常有限，只能处理线性可分的为题，不能解决诸如异或问题这样的非线性可分问题。</p>
+</blockquote>
+<h2 id="5-2-2-多层功能神经元（多层网络）"><a href="#5-2-2-多层功能神经元（多层网络）" class="headerlink" title="5.2.2 多层功能神经元（多层网络）"></a>5.2.2 多层功能神经元（多层网络）</h2><p>对于线性不可分的问题（如异或问题等），则需要使用多层功能神经元。输出层与输入层之间的一层神经元，被称为<strong>隐层（hidden layer）</strong>，隐层和输出层神经元都是拥有激活函数的功能神经元。</p>
+<p><strong>多层前馈神经网络（multi-layer feedforward neural networks）</strong>：每层神经元与下层神经元全互连，神经元之间不存在同层连接，也不存在跨层连接，前馈是指网络拓扑结构上不存在环或者回路。</p>
+<ul>
+<li>输出层：输出层神经元为功能神经元，进行函数处理。</li>
+<li>隐层：隐层神经元为功能神经元，进行函数处理。</li>
+<li>输入层：输入层神经元仅接收外界输入信息，不进行函数处理。</li>
+</ul>
+<p><img src="/2023/06/08/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%BA%94%E7%AB%A0-%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/多层前馈神经网络.png" alt="多层前馈神经网络"></p>
+<blockquote>
+<p>神经网络的学习过程，就是根据训练数据来调整神经元之间的连接权重和神经元阈值。换言之，神经网络“学习”到的东西，蕴含在连接权重和阈值中。</p>
+</blockquote>
+<h1 id="5-3-误差逆传播算法（BP算法）——对梯度计算结果的解释"><a href="#5-3-误差逆传播算法（BP算法）——对梯度计算结果的解释" class="headerlink" title="5.3 误差逆传播算法（BP算法）——对梯度计算结果的解释"></a>5.3 误差逆传播算法（BP算法）——对梯度计算结果的解释</h1><h2 id="5-3-1-标准BP算法"><a href="#5-3-1-标准BP算法" class="headerlink" title="5.3.1 标准BP算法"></a>5.3.1 标准BP算法</h2><p><strong>误差逆传播（error BackPropagation，简称BP）算法</strong>：给定训练集<script type="math/tex">D=\{ (x_1,y_1),...,(x_m,y_m)\},x_i\in\Re^d,y_i\in\Re^l</script>，即输入样本有d个属性，输入向量为l维。假定多层前馈神经网络拥有d个输入神经元，l个输出神经元，q个隐层神经元，其中具体参数有：</p>
+<ul>
+<li><script type="math/tex">\theta_j</script>：输出层第j个神经元的阈值</li>
+<li><script type="math/tex">\gamma_h</script>：隐层第h个神经元的阈值</li>
+<li><script type="math/tex">\upsilon_{ih}</script>：输入层第i个神经元与隐层第h个神经元之间的连接权重</li>
+<li><script type="math/tex">\omega_{hj}</script>：隐层第h个神经元与输出层第j个神经元之间的连接权重</li>
+<li><script type="math/tex">x_i</script>：输入层第i个神经元的输入</li>
+<li><script type="math/tex">y_j</script>：输出层第j个神经元的输出</li>
+<li><script type="math/tex">\alpha_h</script>；隐层第h个神经元的输入</li>
+<li><script type="math/tex">b_h</script>：隐层第h个神经元的输出</li>
+<li><script type="math/tex">\beta_j</script>：输出层第j个神经元的输入</li>
+</ul>
+<p>假设功能神经元激活函数都为对率函数<script type="math/tex">y=\frac{1}{1+e^{-x}}</script>。该多层前馈神经网络中总共有(d+1+l)*q+l个参数需要确定，BP是一个迭代学习算法，在迭代的每一轮都采用广义感知机学习规则（基于梯度下降策略寻找最小化均方误差，以目标的负梯度方向对参数进行调整）对参数进行更新估计，因此对于任意一个参数v，更新公式为<script type="math/tex">v \leftarrow v+\Delta v</script>。</p>
+<p><img src="/2023/06/08/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%BA%94%E7%AB%A0-%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/BP网络.png" alt="BP网络"></p>
+<p>BP算法中的更新公式：</p>
+<script type="math/tex; mode=display">
+\Delta w_{hj}=\eta g_jb_h</script><script type="math/tex; mode=display">
+\Delta \theta_j=-\eta g_j</script><script type="math/tex; mode=display">
+\Delta \upsilon_{ih}=\eta e_hx_i</script><script type="math/tex; mode=display">
+\Delta \gamma_h=-\eta e_h</script><p>其中，<script type="math/tex">g_i</script>为输出层神经元梯度项，<script type="math/tex">e_h</script>为隐层神经元梯度项，具体值如下：</p>
+<script type="math/tex; mode=display">
+g_j=\hat{y_j}^k(1-\hat{y_j}^k)(y_j^k-\hat{y_j}^k)</script><script type="math/tex; mode=display">
+e_h=b_h(1-b_h)\sum_{j=1}^{l}w_{hj}g_j</script><blockquote>
+<p>学习率<script type="math/tex">\eta\in(0,1)</script>控制着算法每一轮迭代中更新的步长（一般设置为0.1）：</p>
+<ul>
+<li><script type="math/tex">\eta</script>太大则容易震荡</li>
+<li><script type="math/tex">\eta</script>太小则收敛速度过慢</li>
+</ul>
+</blockquote>
+<p><strong>标准BP算法的工作流程</strong>：</p>
+<ol>
+<li><p>前向传播过程：输入示例传给输入层，再逐层将信号前传直到产生输出层结果；</p>
+</li>
+<li><p>反向传播过程：计算输出层输出误差（line4-5），再将误差逆传播至隐层神经元（line6），最后根据隐层神经元的误差来对连接权重和阈值进行调整（line7）。</p>
+</li>
+</ol>
+<p><img src="/2023/06/08/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%BA%94%E7%AB%A0-%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/标准BP算法流程.png" alt="标准BP算法流程"></p>
+<h2 id="5-3-2-累积BP算法"><a href="#5-3-2-累积BP算法" class="headerlink" title="5.3.2 累积BP算法"></a>5.3.2 累积BP算法</h2><p>由于BP算法的目标是最小化训练集D上的累积误差<script type="math/tex">E=\frac{1}{m}\sum_{k=1}^{m}E_k</script>，标准BP算法的更新规则是基于for循环下的单个<script type="math/tex">E_k</script>推导而得到的，参数更新非常频繁且迭代次数多。若直接针对累积误差进行最小化，在读取训练集D一遍（一轮学习）后才进行参数更新，就得到了<strong>累积误差逆传播（accumulated error backpropagation）算法</strong>。</p>
+<blockquote>
+<p>注：标准BP算法和累积BP算法的区别类似于随机梯度下降与标准梯度下降的区别。</p>
+</blockquote>
+<p>累积BP算法参数更新的频率相对标准BP算法而言低很多。但在很多任务中，累积误差下降到一定程度后改变非常缓慢，这时标准BP算法往往会更快获得较好的解，在训练集D很大时尤其明显；如果数据集中的数据点之间的一致性较好，则采用累积BP算法往往更优。</p>
+<h2 id="5-3-3-BP神经网络中的两个问题"><a href="#5-3-3-BP神经网络中的两个问题" class="headerlink" title="5.3.3 BP神经网络中的两个问题"></a>5.3.3 BP神经网络中的两个问题</h2><ul>
+<li><strong>问题一：如何设置隐层神经元个数？</strong></li>
+</ul>
+<p><strong>通用近似定理/万能近似定理</strong>：只需一个包含足够多神经元的隐层，多层前馈神经网络能够以任意精度逼近任意复杂度的连续函数，该定理指出了人工神经网络近似任意模型（函数）的能力。</p>
+<p>但如何设置隐层神经元个数仍是<strong>未决问题</strong>，实际运用中通常采用<strong>“试错法”（trail-by-error）</strong>进行调整。</p>
+<ul>
+<li><strong>问题二：如何解决过拟合问题？</strong></li>
+</ul>
+<p>由于BP神经网络的强大表示能力，因此其经常遭遇过拟合，其训练误差持续降低而测试误差仍在上升，常用的两种缓解策略如下：</p>
+<ol>
+<li><strong>早停法（early stopping）</strong>：将数据划分为训练集和验证集（validation set），训练集用来计算梯度、更新连接权重和阈值，验证集用来估计误差。若训练集误差不断降低但是验证集误差开始升高，则意味着此时出现过拟合，应停止训练，同时返回具有最小验证集误差的参数（连接权重和阈值）。</li>
+<li><strong>正则化（regularization）</strong>：其基本思想是在误差目标函数中增加一个用于描述网络复杂度的部分，来限制模型的拟合能力。</li>
+</ol>
+<h1 id="5-4-全局最小和局部极小"><a href="#5-4-全局最小和局部极小" class="headerlink" title="5.4 全局最小和局部极小"></a>5.4 全局最小和局部极小</h1><p><strong>局部极小值陷阱</strong>：由于采用梯度下降法进行参数寻优，若误差函数在当前点的梯度为0则不再更新，此时达到了局部极小，这就意味着参数的迭代更新到此为止。但如果误差函数有多个局部极小，那么就不能保证当前找到的参数解是全局最小（最优），这就是局部极小值陷阱。</p>
+<p><img src="/2023/06/08/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%BA%94%E7%AB%A0-%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/全局最小与局部极小.png" alt="全局最小与局部极小"></p>
+<p><strong>“跳出”局部极小值的方法</strong>：</p>
+<ul>
+<li>采用多组不同参数值初始化多个神经网络，训练后取其中误差最小的解作为最优参数。</li>
+<li>采用模拟退火（simulated annealing）技术，在每一次迭代中都有一定概率接受“次优解”（概率要逐渐降低），从而有助于跳出局部极小。</li>
+<li>使用随机梯度下降，引入随机因素。</li>
+<li>使用遗传算法（genetic algorithms）来更好地逼近全局最小。</li>
+</ul>
+<blockquote>
+<p>以上方法大多是启发式，理论上尚缺乏保障。</p>
+</blockquote>
+<h1 id="5-5-其他神经网络（简介）"><a href="#5-5-其他神经网络（简介）" class="headerlink" title="5.5 其他神经网络（简介）"></a>5.5 其他神经网络（简介）</h1><h2 id="5-5-1-径向基函数（RBF）网络"><a href="#5-5-1-径向基函数（RBF）网络" class="headerlink" title="5.5.1 径向基函数（RBF）网络"></a>5.5.1 径向基函数（RBF）网络</h2><p><strong>RBF网络</strong>：是一种单隐层前馈神经网络，并使用<strong>径向基函数</strong>（如高斯径向基函数<script type="math/tex">\rho(x,c_i)=e^{-\beta_i||x-c_i||^2}</script>）作为隐层神经元激活函数，而输出层则是对隐层神经元输出的线性组合。</p>
+<p><strong>RBF网络训练过程</strong>：</p>
+<ol>
+<li>确定神经元中心（如聚类、随机采样等）</li>
+<li>利用BP算法确定参数</li>
+</ol>
+<h2 id="5-5-2-自适应谐振理论（ART）网络"><a href="#5-5-2-自适应谐振理论（ART）网络" class="headerlink" title="5.5.2 自适应谐振理论（ART）网络"></a>5.5.2 自适应谐振理论（ART）网络</h2><p><strong>竞争型学习（competitive learning）</strong>：是神经网络中一种无监督学习策略，网络的输出神经元相互竞争，同一时刻只有一个胜者神经元被激活，其他被抑制【“胜者通吃”（winner-take-all）原则】。</p>
+<p><strong>ART网络</strong>：主要思想是竞争型学习。该网络由比较层、识别层、识别阈值和重置模块构成.比较层负责接收输入样本，并将其传递给识别层神经元.识别层每个神经元对应 一个模式类，<strong>神经元数目可在训练过程中动态增长</strong>以增加新的模式类。</p>
+<p><strong>ART网络优点</strong>：</p>
+<ol>
+<li>较好地缓解了竞争型学习中“可塑性-稳定性窘境”（stability plasticity dilemma）</li>
+<li>可进行增量学习（incremental learning）或在线学习（online learning）</li>
+</ol>
+<h2 id="5-5-3-自组织映射（SOM）网络"><a href="#5-5-3-自组织映射（SOM）网络" class="headerlink" title="5.5.3 自组织映射（SOM）网络"></a>5.5.3 自组织映射（SOM）网络</h2><p><strong>SOM网络</strong>：是一种竞争学习型无监督神经网络。它能将<strong>高维输入数据映射到低维</strong>，同时保持其在高维空间中的拓扑结构。因此SOM的训练目标就是为每个输出层神经元找到合适的权向量，以达到保持拓扑结构的目的。</p>
+<p><strong>SOM运用</strong>：聚类、高维数据可视化、图像分割等方面均有广泛运用。</p>
+<p><img src="/2023/06/08/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%BA%94%E7%AB%A0-%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/SOM.png" alt="SOM"></p>
+<h2 id="5-5-4-级联相关（CCL）网络"><a href="#5-5-4-级联相关（CCL）网络" class="headerlink" title="5.5.4 级联相关（CCL）网络"></a>5.5.4 级联相关（CCL）网络</h2><p><strong>CCL网络</strong>：是结构适应网络（构造性神经网络）的代表，将网络结构也当作学习的目标之一，并希望能在训练过程中找到最符合数据特点的网络结构。</p>
+<p><img src="/2023/06/08/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%BA%94%E7%AB%A0-%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/CCL.png" alt="CCL"></p>
+<p><strong>CCL网络中两个主要部分</strong>：</p>
+<ol>
+<li>“级联”：建立层次连接的层级结构（确定网络结构）</li>
+<li>“相关”：通过最大化新神经元的输出与网络误差之间的相关性来训练参数（训练参数）</li>
+</ol>
+<blockquote>
+<p>级联相关网络不需要设定网络层数和隐层神经元数量，且训练速度快，但在数据较小时易陷入过拟合。</p>
+</blockquote>
+<h2 id="5-5-5-Elman网络"><a href="#5-5-5-Elman网络" class="headerlink" title="5.5.5 Elman网络"></a>5.5.5 Elman网络</h2><p><strong>Elman网络</strong>：是递归神经网络（recurrent neural networks）的一种，允许网络中出现环形结构。它的结构与多层前馈网络相似，但隐层神经元输出被反馈回来称为神经元下一时刻输入的一部分。</p>
+<p><img src="/2023/06/08/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%BA%94%E7%AB%A0-%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/Elman.png" alt="Elman"></p>
+<h2 id="5-5-6-Boltzmann机"><a href="#5-5-6-Boltzmann机" class="headerlink" title="5.5.6 Boltzmann机"></a>5.5.6 Boltzmann机</h2><p><strong>Boltzmann机</strong>：是一种“基于能量的模型”（energy-based model），为网络状态定义一个Boltzmann机能量，网络的训练就是在最小化这个能量函数使得网络达到理想状态——Boltzmann分布。现实中常采用的是受限的Boltzmann机（Restricted Boltzmann Machine，简称RBM）。</p>
+<p><img src="/2023/06/08/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%BA%94%E7%AB%A0-%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/Boltzmann机和RBM.png" alt="Boltzmann机和RBM"></p>
+<h1 id="5-6-深度学习"><a href="#5-6-深度学习" class="headerlink" title="5.6 深度学习"></a>5.6 深度学习</h1><p><strong>深度学习（deep learning） = 表示学习（representation learning）/特征学习（feature learning） + 机器学习</strong></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2023/06/07/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E5%9B%9B%E7%AB%A0-%E5%86%B3%E7%AD%96%E6%A0%91/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1223,7 +1426,7 @@ E(f;D)=bias^2(x)+var(x)+\epsilon^2</script><p><strong>偏差-方差窘境（bias
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-count">7</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1236,7 +1439,7 @@ E(f;D)=bias^2(x)+var(x)+\epsilon^2</script><p><strong>偏差-方差窘境（bias
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-count">3</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -1274,7 +1477,7 @@ E(f;D)=bias^2(x)+var(x)+\epsilon^2</script><p><strong>偏差-方差窘境（bias
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共7.9k字</span>
+  <span class="post-count">博客全站共11k字</span>
 </div>
         
 
