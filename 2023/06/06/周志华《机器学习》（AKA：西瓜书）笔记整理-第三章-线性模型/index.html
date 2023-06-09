@@ -33,7 +33,7 @@
 <meta property="og:image" content="http://example.com/2023/06/06/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%B8%89%E7%AB%A0-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/LDA.png">
 <meta property="og:image" content="http://example.com/2023/06/06/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%B8%89%E7%AB%A0-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/OvO%E5%92%8COvR.png">
 <meta property="article:published_time" content="2023-06-06T01:42:26.000Z">
-<meta property="article:modified_time" content="2023-06-07T03:20:31.148Z">
+<meta property="article:modified_time" content="2023-06-09T07:37:47.629Z">
 <meta property="article:author" content="nashswift">
 <meta property="article:tag" content="Machine Learning">
 <meta name="twitter:card" content="summary">
@@ -230,7 +230,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-06-07 11:20:31" itemprop="dateModified" datetime="2023-06-07T11:20:31+08:00">2023-06-07</time>
+                <time title="修改时间：2023-06-09 15:37:47" itemprop="dateModified" datetime="2023-06-09T15:37:47+08:00">2023-06-09</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -348,16 +348,16 @@ J(\hat{w})=\frac{1}{m}\sum_{i=1}^{m}{cost(f(x_i),y_i)}</script><script type="mat
 \begin{cases}
 -log(f(x)), \quad y=1\\
 -log(1-f(x)), \quad y=0
-\end{cases}</script><p>将式（12）的分段函数写成一个式子（方法不唯一）：</p>
+\end{cases}</script><p>将该分段函数写成一个式子（方法不唯一）：</p>
 <script type="math/tex; mode=display">
 cost(f(x),y)=-ylog(f(x))-(1-y)log(1-f(x))</script><p>最终<strong>优化目标</strong>是：</p>
 <script type="math/tex; mode=display">
 \hat{w}=\underset{\hat{w}}{\arg\min}\frac{1}{m}\sum_{i=1}^{m}\Big[{y_ilog(f(x_i))+(1-y_i)log(1-f(x_i))}\Big]</script><ul>
 <li><strong>方法一：梯度下降法（和线性回归的梯度下降一样，只不过代价函数不同）</strong></li>
 </ul>
-<p>Repeat {</p>
-<p>​    <script type="math/tex">\hat w_j:=\hat w_j-\alpha\frac{\partial}{\partial\hat{w}_j}J(\hat{w})</script>    for every j = 0, 1, …, d</p>
-<p>} until convergence</p>
+<p>​    Repeat {</p>
+<p>​            <script type="math/tex">\hat w_j:=\hat w_j-\alpha\frac{\partial}{\partial\hat{w}_j}J(\hat{w})</script>    for every j = 0, 1, …, d</p>
+<p>​    } until convergence</p>
 <ul>
 <li><strong>方法二：牛顿法（Newton Method）</strong></li>
 </ul>
@@ -542,8 +542,8 @@ S_t=S_b+S_w=\sum_{i=1}^m{(x_i-\mu)(x_i-\mu)^T}</script><p>显然，多分类LDA�
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2023/06/05/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0%E4%B8%8E%E9%80%89%E6%8B%A9/" rel="prev" title="《机器学习》第二章 模型评估与选择">
-      <i class="fa fa-chevron-left"></i> 《机器学习》第二章 模型评估与选择
+    <a href="/2023/06/05/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0%E4%B8%8E%E9%80%89%E6%8B%A9/" rel="prev" title="周志华《机器学习》（AKA：西瓜书）笔记整理-第二章-模型评估与选择">
+      <i class="fa fa-chevron-left"></i> 周志华《机器学习》（AKA：西瓜书）笔记整理-第二章-模型评估与选择
     </a></div>
       <div class="post-nav-item">
     <a href="/2023/06/07/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E5%9B%9B%E7%AB%A0-%E5%86%B3%E7%AD%96%E6%A0%91/" rel="next" title="周志华《机器学习》（AKA：西瓜书）笔记整理-第四章-决策树">
@@ -623,7 +623,7 @@ S_t=S_b+S_w=\sum_{i=1}^m{(x_i-\mu)(x_i-\mu)^T}</script><p>显然，多分类LDA�
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-count">8</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -674,7 +674,7 @@ S_t=S_b+S_w=\sum_{i=1}^m{(x_i-\mu)(x_i-\mu)^T}</script><p>显然，多分类LDA�
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共11k字</span>
+  <span class="post-count">博客全站共12.5k字</span>
 </div>
         
 
