@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="7.1 贝叶斯决策论贝叶斯决策论（Bayesian decision theory）：是在概率框架下实施决策的基本方法。对于分类任务而言，在所有相关概率已知的理想条件下，贝叶斯决策论考虑如何基于这些概率和误判损失来选择最优类别标记。 最小化分类错误率的贝叶斯最优分类器：h^*(x)&#x3D;\underset{c}{\arg\max}\ P(c|x)  判别式模型和生成式模型：  判别式模型：通过直接建模">
+<meta property="og:type" content="article">
+<meta property="og:title" content="周志华《机器学习》（AKA：西瓜书）笔记整理-第七章-贝叶斯分类器">
+<meta property="og:url" content="http://example.com/2023/06/10/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%B8%83%E7%AB%A0-%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%88%86%E7%B1%BB%E5%99%A8/index.html">
+<meta property="og:site_name" content="长野原烟花店">
+<meta property="og:description" content="7.1 贝叶斯决策论贝叶斯决策论（Bayesian decision theory）：是在概率框架下实施决策的基本方法。对于分类任务而言，在所有相关概率已知的理想条件下，贝叶斯决策论考虑如何基于这些概率和误判损失来选择最优类别标记。 最小化分类错误率的贝叶斯最优分类器：h^*(x)&#x3D;\underset{c}{\arg\max}\ P(c|x)  判别式模型和生成式模型：  判别式模型：通过直接建模">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2023/06/10/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%B8%83%E7%AB%A0-%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%88%86%E7%B1%BB%E5%99%A8/%E5%8D%8A%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%88%86%E7%B1%BB%E5%99%A8.png">
+<meta property="og:image" content="http://example.com/2023/06/10/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%B8%83%E7%AB%A0-%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%88%86%E7%B1%BB%E5%99%A8/%E8%B4%9D%E5%8F%B6%E6%96%AF%E7%BD%91%E5%92%8C%E6%9D%A1%E4%BB%B6%E6%A6%82%E7%8E%87%E8%A1%A8.png">
+<meta property="og:image" content="http://example.com/2023/06/10/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%B8%83%E7%AB%A0-%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%88%86%E7%B1%BB%E5%99%A8/%E8%B4%9D%E5%8F%B6%E6%96%AF%E7%BD%91%E4%B8%AD%E7%9A%84%E4%B8%89%E7%A7%8D%E4%BE%9D%E8%B5%96%E5%85%B3%E7%B3%BB.png">
+<meta property="og:image" content="http://example.com/2023/06/10/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%B8%83%E7%AB%A0-%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%88%86%E7%B1%BB%E5%99%A8/%E5%90%89%E5%B8%83%E6%96%AF%E9%87%87%E6%A0%B7%E7%AE%97%E6%B3%95.png">
+<meta property="article:published_time" content="2023-06-10T13:09:08.000Z">
+<meta property="article:modified_time" content="2023-06-11T08:58:23.350Z">
+<meta property="article:author" content="nashswift">
+<meta property="article:tag" content="Machine Learning">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2023/06/10/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%B8%83%E7%AB%A0-%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%88%86%E7%B1%BB%E5%99%A8/%E5%8D%8A%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%88%86%E7%B1%BB%E5%99%A8.png">
+
+<link rel="canonical" href="http://example.com/2023/06/10/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%B8%83%E7%AB%A0-%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%88%86%E7%B1%BB%E5%99%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>周志华《机器学习》（AKA：西瓜书）笔记整理-第七章-贝叶斯分类器 | 长野原烟花店</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">长野原烟花店</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/06/10/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%B8%83%E7%AB%A0-%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%88%86%E7%B1%BB%E5%99%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="nashswift">
+      <meta itemprop="description" content="What matters is not your ability, but your choice.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="长野原烟花店">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          周志华《机器学习》（AKA：西瓜书）笔记整理-第七章-贝叶斯分类器
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-06-10 21:09:08" itemprop="dateCreated datePublished" datetime="2023-06-10T21:09:08+08:00">2023-06-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-06-11 16:58:23" itemprop="dateModified" datetime="2023-06-11T16:58:23+08:00">2023-06-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ML-study/" itemprop="url" rel="index"><span itemprop="name">ML study</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="7-1-贝叶斯决策论"><a href="#7-1-贝叶斯决策论" class="headerlink" title="7.1 贝叶斯决策论"></a>7.1 贝叶斯决策论</h1><p><strong>贝叶斯决策论（Bayesian decision theory）</strong>：是在概率框架下实施决策的基本方法。对于分类任务而言，在所有相关概率已知的理想条件下，贝叶斯决策论考虑如何基于这些概率和误判损失来选择最优类别标记。</p>
+<p><strong>最小化分类错误率的贝叶斯最优分类器</strong>：<script type="math/tex">h^*(x)=\underset{c}{\arg\max}\ P(c|x)</script></p>
+<blockquote>
+<p><strong>判别式模型和生成式模型</strong>：</p>
+<ul>
+<li>判别式模型：通过直接建模<script type="math/tex">P(c|x)</script>来预测c，这样得到的是判别式模型。如决策树、BP神经网络、SVM等等。</li>
+<li>生成式模型：先对概率分布<script type="math/tex">P(x,c)</script>进行建模，再利用贝叶斯定理<script type="math/tex">P(c|x)=\frac{P(c)P(x|c)}{P(x)}</script>来获得<script type="math/tex">P(c|x)</script>，这样得到的是生成式模型，其中<script type="math/tex">P(c)</script>是先验概率（prior），<script type="math/tex">P(x|c)</script>是条件概率（conditional probability）/似然（likelihood），<script type="math/tex">P(x)</script>是证据（evidence）因子。</li>
+</ul>
+</blockquote>
+<h1 id="7-2-极大似然估计（频率学派）"><a href="#7-2-极大似然估计（频率学派）" class="headerlink" title="7.2 极大似然估计（频率学派）"></a>7.2 极大似然估计（频率学派）</h1><p>假定类条件概率<script type="math/tex">P(x|c)</script>被参数向量<script type="math/tex">\theta_c</script>唯一确定，我们的任务就是利用训练集D中第c类样本组成的集合<script type="math/tex">D_c</script>来估计参数向量<script type="math/tex">\theta_c</script>，而概率模型的训练过程就是<strong>参数估计（parameter estimation）</strong>过程。</p>
+<blockquote>
+<p><strong>频率学派和贝叶斯学派</strong>：</p>
+<ul>
+<li>频率学派：认为参数虽然未知，但是个客观存在的固定值，因此可以通过优化似然函数等方式来确定参数值。</li>
+<li>贝叶斯学派：认为参数是未观察的随机变量，本身也有分布，因此可以假定参数副层一个先验分布，然后通过观测数据计算参数的后验分布。</li>
+</ul>
+</blockquote>
+<p><strong>极大似然估计（maximum likelihood estimation，简称MLE）</strong>的求解过程：参数向量<script type="math/tex">\theta_c</script>对训练集D中第c类样本组成的集合<script type="math/tex">D_c</script>的<strong>对数似然</strong>为</p>
+<script type="math/tex; mode=display">
+LL(\theta)=\log P(D_c|\theta_c)=\log\prod_{x\in D_c}P(x|D_c)=\sum_{x\in D_c}\log P(x|D_c)</script><blockquote>
+<p>使用对数似然的目的：使得求导更简便，同时也防止连乘操作带来的下溢风险。</p>
+</blockquote>
+<p>此时参数的极大似然估计<script type="math/tex">\hat{\theta_c}</script>为：</p>
+<script type="math/tex; mode=display">
+\hat{\theta_c}=\underset{\theta_c}{\arg\max}LL(\theta_c)</script><p>注意，这种参数化的方法虽然能使得类条件概率估计变得相对简单，但是<strong>估计结果的准确性严重依赖于所假设的概率分布形式是否符合潜在的真实数据分布</strong>，因此在实际应用中往往需要在一定程度上利用关于应用任务本身的经验知识。此外，由于类条件概率<script type="math/tex">P(x|c)</script>是在所有属性上的联合概率，因此难以从有限的训练样本中直接估计获得。</p>
+<h1 id="7-3-朴素贝叶斯分类器"><a href="#7-3-朴素贝叶斯分类器" class="headerlink" title="7.3 朴素贝叶斯分类器"></a>7.3 朴素贝叶斯分类器</h1><p><strong>朴素贝叶斯分类器（naive Bayes classifier）</strong>：采用了<strong>“属性条件独立性假设”（attribute conditional independence assumption）</strong>——假设每个属性独立地对分类结果发生影响。</p>
+<p>基于条件独立性（iid）假设，贝叶斯定理可以重写为</p>
+<script type="math/tex; mode=display">
+P(c|x)=\frac{P(c)P(x|c)}{P(x)}=\frac{P(c)}{P(x)}\prod_{i=1}^{d}P(x_i|c)</script><p>朴素贝叶斯分类器的表达式为</p>
+<script type="math/tex; mode=display">
+h_{nb}(x)=\underset{c}{\arg\max}\ P(c)\prod_{i=1}^dP(x_i|c)</script><p>令<script type="math/tex">D_c</script>表示训练集D中第c类样本组成的集合，<script type="math/tex">D_{c,x_i}</script>表示<script type="math/tex">D_c</script>在第i个属性上取值为<script type="math/tex">x_i</script>的样本组成的集合，则类先验概率为<script type="math/tex">P(c)=\frac{\lvert D_c\rvert}{\lvert D\rvert}</script>，条件概率为<script type="math/tex">P(x_i|c)=\frac{\lvert D_{c,x_i}\rvert}{\lvert D_c\rvert}</script>。</p>
+<p>需要注意的是，若某个属性值在训练集D中没有与某个类出现过，上式将出现始终为0的情况。为了避免其他属性携带的信息被训练集中未出现的属性值“抹去”，在估计概率值时通常要采用<strong>“平滑”（smoothing）</strong>，常用<strong>“拉普拉斯修正”（Laplacian correction）</strong>。令N表示训练集D中的可能类别数，<script type="math/tex">N_i</script>表示第i个属性的可能取值数，先验概率和条件概率分别修正为</p>
+<script type="math/tex; mode=display">
+\hat{P}(c)=\frac{\lvert D_c\rvert+1}{\lvert D\rvert+N}</script><script type="math/tex; mode=display">
+\hat{P}(x_i|c)=\frac{\lvert D_{c,x_i}\rvert+1}{\lvert D_c\rvert+N_i}</script><blockquote>
+<p>现实中朴素贝叶斯分类器的多种使用方式：</p>
+<ul>
+<li>若任务对预测速度要求高：可将NB涉及的所有概率估值事先储存，预测时只需“查表”即可</li>
+<li>若任务数据更替频繁：采用“懒惰学习”（lazy learning）方式</li>
+<li>若数据不断增加：可在现有估值基础上仅对新增样本属性值所设计的概率估值进行修正即可</li>
+</ul>
+</blockquote>
+<h1 id="7-4-半朴素贝叶斯分类器"><a href="#7-4-半朴素贝叶斯分类器" class="headerlink" title="7.4 半朴素贝叶斯分类器"></a>7.4 半朴素贝叶斯分类器</h1><p>由于朴素贝叶斯分类器所依赖的属性条件独立性假设在现实任务中往往很难成立，因此我们尝试对这一假设进行<strong>一定程度的放松</strong>，于是就得到了<strong>半朴素贝叶斯分类器（semi-naive Bayes classifiers）</strong>。</p>
+<p><strong>独依赖估计（One-Dependent Estimator，简称ODE）</strong>：是半朴素贝叶斯分类器最常用的策略。假设每个属性在类别之外<strong>最多仅依赖于一个其他属性</strong>，即</p>
+<script type="math/tex; mode=display">
+P(c|x)\propto P(c)\prod_{i=1}^dP(x_i|c,pa_i)</script><p>其中<script type="math/tex">pa_i</script>为属性<script type="math/tex">x_i</script>所依赖的属性，称为<script type="math/tex">x_i</script>的父属性。</p>
+<p><strong>how确定每个属性的父属性？</strong></p>
+<ul>
+<li><strong>SPODE（Super-Parent ODE）方法</strong>：假设所有属性都依赖于同一个属性——<strong>“超父”（super-parent）</strong>，然后通过交叉验证等方法确定超父属性。</li>
+<li><strong>TAN（Tree Augmented naive Bayes）方法</strong>：在最大带权生成树（maximum weighted spanning tree）算法的基础上，将属性之间的强依赖关系约简为<strong>树形结构</strong>，TAN实际上只保留了强相关属性之间的依赖性。</li>
+<li><strong>AODE（Averaged One-Dependent Estimator）方法</strong>：尝试将每个属性都作为超父来构建SPODE，然后将那些有足够训练数据支撑的SPODE<strong>集成</strong>起来作为最终结果。</li>
+</ul>
+<p><img src="/2023/06/10/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%B8%83%E7%AB%A0-%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%88%86%E7%B1%BB%E5%99%A8/半朴素贝叶斯分类器.png" alt="半朴素贝叶斯分类器"></p>
+<blockquote>
+<p>也可以考虑<strong>高阶依赖</strong>来进一步提升泛化性能，从而将ODE拓展为kDE，但由此带来的所需训练样本的数量将以指数级增加，同时也容易陷入估计高阶联合概率的泥沼。</p>
+</blockquote>
+<h1 id="7-5-贝叶斯网"><a href="#7-5-贝叶斯网" class="headerlink" title="7.5 贝叶斯网"></a>7.5 贝叶斯网</h1><p><strong>贝叶斯网（Bayesian network）/信念网（belief network）</strong>：借助有向无环图（Directed Acyclic Graph，简称DAG）来刻画属性之间的依赖关系，并使用条件概率表（Conditional Probability，简称CPT）描述属性的联合概率分布。一个贝叶斯网B由结构G和参数<script type="math/tex">\Theta</script>两部分构成，即<script type="math/tex">G=\langle G,\Theta\rangle</script>，其中网络结构G是一个DAG，每个节点对应一个属性，每条边对应两个节点（属性）的直接依赖关系；参数<script type="math/tex">\Theta</script>用于定量描述这种依赖关系。</p>
+<p><img src="/2023/06/10/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%B8%83%E7%AB%A0-%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%88%86%E7%B1%BB%E5%99%A8/贝叶斯网和条件概率表.png" alt="贝叶斯网和条件概率表"></p>
+<h2 id="7-5-1-结构"><a href="#7-5-1-结构" class="headerlink" title="7.5.1 结构"></a>7.5.1 结构</h2><p><strong>贝叶斯网中的联合概率分布：</strong>给定属性<script type="math/tex">x_i</script>在贝叶斯网G中的父节点集<script type="math/tex">\pi_i</script>，贝叶斯网假设每个属性与它的非后裔属性独立（无环），因此贝叶斯网<script type="math/tex">G=\langle G,\Theta\rangle</script>将属性<script type="math/tex">x_1,x_2,...,x_d</script>的联合概率分布定义为</p>
+<script type="math/tex; mode=display">
+P_B(x_1,x_2,...,x_d)=\prod_{i=1}^d{P_B(x_i|\pi_i)}=\prod_{i=1}^d\theta_{x_i|\pi_i}</script><p><strong>贝叶斯网络中的三种典型结构</strong>：</p>
+<ul>
+<li><strong>同父（common parent）结构/tail-to-tail结构</strong>：给定父节点<script type="math/tex">x_1</script>的取值，则<script type="math/tex">x_3</script>与<script type="math/tex">x_4</script>条件独立</li>
+<li><strong>V型结构（V-structure）结构/冲撞结构/head-to-head结构</strong>：给定子节点<script type="math/tex">x_4</script>的取值，则<script type="math/tex">x_1</script>与<script type="math/tex">x_2</script>必定不独立；若<script type="math/tex">x_4</script>的取值完全未知，则<script type="math/tex">x_1</script>与<script type="math/tex">x_2</script>条件独立，称之为边界独立性（marginal independence）</li>
+<li><strong>顺序结构/head-to-tail结构</strong>：给定x的取值，则y与z条件独立</li>
+</ul>
+<p><img src="/2023/06/10/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%B8%83%E7%AB%A0-%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%88%86%E7%B1%BB%E5%99%A8/贝叶斯网中的三种依赖关系.png" alt="贝叶斯网中的三种依赖关系"></p>
+<h2 id="7-5-2-学习"><a href="#7-5-2-学习" class="headerlink" title="7.5.2 学习"></a>7.5.2 学习</h2><p><strong>评分函数（score function）</strong>：用来评估贝叶斯网与训练数据的契合程度，然后基于这个评分函数来寻找结构最优的贝叶斯网，常用的评分函数通常基于信息论准则。</p>
+<p><strong>最小描述长度（Minimal Description Length，简称MDL）准则</strong>：我们应选择那个综合编码长度（包括描述网络和编码数据）最短的贝叶斯网。</p>
+<p>设<script type="math/tex">f(\theta)</script>表示描述每个参数<script type="math/tex">\theta</script>所需的编码位数，则贝叶斯网<script type="math/tex">G=\langle G,\Theta\rangle</script>在训练集D上的评分函数为</p>
+<script type="math/tex; mode=display">
+s(B|D)=f(\theta)\lvert B\rvert-LL(B|D)=f(\theta)\lvert B\rvert-\sum_{i=1}^m\log P_B(x_i)</script><p>其中第一项是计算编码贝叶斯网B所需的编码位数，第二项是计算B对应的概率分布<script type="math/tex">P_B</script>对D描述得多好。为了最小化评分函数<script type="math/tex">s(B|D)</script>，只需对网格结构进行搜索，而候选结构的最优参数可以直接在训练集上通过经验估计获得，即<script type="math/tex">\theta_{x_i|\pi_i}=\hat{P}_D(x_i|\pi_i)</script>。</p>
+<ul>
+<li>若<script type="math/tex">f(\theta)=1</script>，则得到<strong>AIC（Akaike Information Criterion）评分函数</strong>：</li>
+</ul>
+<script type="math/tex; mode=display">
+AIC(B|D)=\lvert B\rvert-LL(B|D)</script><ul>
+<li>若<script type="math/tex">f(\theta)=\frac{1}{2}\log m</script>，则得到<strong>BIC（Bayesian Information Criterion）评分函数</strong>：</li>
+</ul>
+<script type="math/tex; mode=display">
+BIC(B|D)=\frac{\log m}{2}\lvert B\rvert-LL(B|D)</script><ul>
+<li>若<script type="math/tex">f(\theta)=0</script>，则评分函数退化为<strong>对数似然</strong>。</li>
+</ul>
+<blockquote>
+<p>从所有可能的网络空间搜索最优贝叶斯网络是一个<strong>NP难问题</strong>，常用策略有：</p>
+<ol>
+<li>贪心法，例如从某个网络结构出发每次调整一条边，直到评分函数值不再降低为止</li>
+<li>通过给网络结构施加约束来削减搜索空间，例如限定网格结构为树形结构等</li>
+</ol>
+</blockquote>
+<h2 id="7-5-3-推断"><a href="#7-5-3-推断" class="headerlink" title="7.5.3 推断"></a>7.5.3 推断</h2><p><strong>推断（inference）</strong>：通过已知变量（证据）来推测待查询变量的过程。</p>
+<blockquote>
+<p>精确推断：NP难</p>
+<p>近似推断：通过降低精度要求，在有限时间内求得近似解</p>
+</blockquote>
+<p><strong>吉布斯采样（Gibbs sampling）</strong>：用作贝叶斯网的近似推断。</p>
+<p><img src="/2023/06/10/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%B8%83%E7%AB%A0-%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%88%86%E7%B1%BB%E5%99%A8/吉布斯采样算法.png" alt="吉布斯采样算法"></p>
+<p><strong>吉布斯采样法的缺点</strong>：</p>
+<ol>
+<li>吉布斯采样算法的收敛速度较慢</li>
+<li>若贝叶斯网中出现极端概率0/1，此时吉布斯采样算法会给出错误的估计结果</li>
+</ol>
+<h1 id="7-6-EM算法"><a href="#7-6-EM算法" class="headerlink" title="7.6 EM算法"></a>7.6 EM算法</h1><p><strong>隐变量（latent variable）</strong>：未观测变量。</p>
+<p><strong>EM（Expectation-Maximization）算法</strong>：估计参数隐变量的方法，可以视作使用坐标下降（coordinate descent）法来最大化对数似然下界的过程。</p>
+<ul>
+<li><strong>E-step（Expectation）</strong>：根据当前估计的参数值来计算对数似然的期望值</li>
+<li><strong>M-step（Maximization）</strong>：寻找E步产生似然期望最大化的参数值</li>
+</ul>
+<p>具体步骤（参考李航《统计学习方法》中对EM算法的描述）：</p>
+<p>输入：观测变量数据集X，隐变量数据集Z，联合分布<script type="math/tex">P(X,Z|\theta)</script>，条件分布<script type="math/tex">P(Z|Y,\theta)</script></p>
+<p>输出：模型参数<script type="math/tex">\theta</script></p>
+<p>Step1：选择模型参数的初值<script type="math/tex">\theta^0</script>，开始迭代</p>
+<p>Step2：（E-step）记<script type="math/tex">\theta^{(i)}</script>为第i次迭代时模型参数<script type="math/tex">\theta</script>的估计值，在第i+1次迭代的E步，计算</p>
+<script type="math/tex; mode=display">
+Q(\theta,\theta^{(i)})=E_{Z|X,\theta^{(i)}}LL(\theta|X,Z)=\sum_Z\log P(X,Z|\theta)P(Z|X,\theta^{(i)})</script><p>Step3：（M-step）求使得<script type="math/tex">Q(\theta,\theta^{(i)})</script>最大化的模型参数<script type="math/tex">\theta</script>，以此确定第i+1次迭代的参数估计值<script type="math/tex">\theta^{(i+1)}</script></p>
+<script type="math/tex; mode=display">
+\theta^{(i+1)}=\underset{\theta}{\arg\max}\ Q(\theta,\theta^{(i)})</script><p>Step4：重复第2步和第3步直到收敛</p>
+
+    </div>
+
+    
+    
+    
+
+    
+      <div>
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:24px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+      </div>
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>nashswift
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2023/06/10/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%B8%83%E7%AB%A0-%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%88%86%E7%B1%BB%E5%99%A8/" title="周志华《机器学习》（AKA：西瓜书）笔记整理-第七章-贝叶斯分类器">http://example.com/2023/06/10/周志华《机器学习》（AKA：西瓜书）笔记整理-第七章-贝叶斯分类器/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Machine-Learning/" rel="tag"># Machine Learning</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/06/09/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E5%85%AD%E7%AB%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/" rel="prev" title="周志华《机器学习》（AKA：西瓜书）笔记整理-第六章-支持向量机">
+      <i class="fa fa-chevron-left"></i> 周志华《机器学习》（AKA：西瓜书）笔记整理-第六章-支持向量机
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#7-1-%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%86%B3%E7%AD%96%E8%AE%BA"><span class="nav-number">1.</span> <span class="nav-text">7.1 贝叶斯决策论</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7-2-%E6%9E%81%E5%A4%A7%E4%BC%BC%E7%84%B6%E4%BC%B0%E8%AE%A1%EF%BC%88%E9%A2%91%E7%8E%87%E5%AD%A6%E6%B4%BE%EF%BC%89"><span class="nav-number">2.</span> <span class="nav-text">7.2 极大似然估计（频率学派）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7-3-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%88%86%E7%B1%BB%E5%99%A8"><span class="nav-number">3.</span> <span class="nav-text">7.3 朴素贝叶斯分类器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7-4-%E5%8D%8A%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%88%86%E7%B1%BB%E5%99%A8"><span class="nav-number">4.</span> <span class="nav-text">7.4 半朴素贝叶斯分类器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7-5-%E8%B4%9D%E5%8F%B6%E6%96%AF%E7%BD%91"><span class="nav-number">5.</span> <span class="nav-text">7.5 贝叶斯网</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#7-5-1-%E7%BB%93%E6%9E%84"><span class="nav-number">5.1.</span> <span class="nav-text">7.5.1 结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-5-2-%E5%AD%A6%E4%B9%A0"><span class="nav-number">5.2.</span> <span class="nav-text">7.5.2 学习</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-5-3-%E6%8E%A8%E6%96%AD"><span class="nav-number">5.3.</span> <span class="nav-text">7.5.3 推断</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7-6-EM%E7%AE%97%E6%B3%95"><span class="nav-number">6.</span> <span class="nav-text">7.6 EM算法</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="nashswift"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">nashswift</p>
+  <div class="site-description" itemprop="description">What matters is not your ability, but your choice.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2023-06 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">nashswift</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共15.3k字</span>
+</div>
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
