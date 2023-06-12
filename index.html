@@ -192,6 +192,220 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/06/12/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E5%85%AB%E7%AB%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="nashswift">
+      <meta itemprop="description" content="What matters is not your ability, but your choice.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="长野原烟花店">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/06/12/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E5%85%AB%E7%AB%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/" class="post-title-link" itemprop="url">周志华《机器学习》（AKA：西瓜书）笔记整理-第八章-集成学习</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-06-12 10:14:33 / 修改时间：12:11:09" itemprop="dateCreated datePublished" datetime="2023-06-12T10:14:33+08:00">2023-06-12</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ML-study/" itemprop="url" rel="index"><span itemprop="name">ML study</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="8-1-个体与集成"><a href="#8-1-个体与集成" class="headerlink" title="8.1 个体与集成"></a>8.1 个体与集成</h1><p><strong>集成学习（ensemble learning）/多分类系统（multi-classifier system）/基于委员会的学习（committee-based learning）</strong>：通过构建并结合多个学习器来完成学习任务。通过将多个学习器进行结合，常常可以获得比单一学习器更为显著优越的泛化性能，这对<strong>弱学习器（weak learner）</strong>尤其明显。集成学习的结果通过<strong>投票法（voting）</strong>产生，即“少数服从多数”。</p>
+<p><img src="/2023/06/12/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E5%85%AB%E7%AB%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/集成学习.png" alt="集成学习"></p>
+<p><strong>个体学习器（individual learner）</strong>：通常由一个现有的学习算法从训练数据中产生，是构成整个集成学习器的基础。</p>
+<ul>
+<li><strong>同质（homogeneous）</strong>：构成集成学习结构的个体学习器类型相同。这些个体学习器也称为<strong>基学习器（base learner）</strong>，相应的学习算法称为<strong>基学习算法（base learning algorithm）</strong>。</li>
+<li><strong>异质（heterogeneous）</strong>：构成集成学习结构的个体学习器类型相同。这些个体学习器也称为<strong>组件学习器（component learner）</strong>。</li>
+</ul>
+<blockquote>
+<p>要获得好的集成，个体学习器应<strong>“好而不同”</strong>——个体学习器要有一定的“准确性”，即学习器不能太坏（至少不差于弱学习器），同时要有“”多样性“，即个体学习器之间有一定的差异。事实上，“好”和“不同”往往是相互冲突的，因此如何产生并结合“好而不同”的个体学习器是集成学习研究的核心。</p>
+</blockquote>
+<h1 id="8-2-Boosting"><a href="#8-2-Boosting" class="headerlink" title="8.2 Boosting"></a>8.2 Boosting</h1><h2 id="8-2-1-Boosting工作机制"><a href="#8-2-1-Boosting工作机制" class="headerlink" title="8.2.1 Boosting工作机制"></a>8.2.1 Boosting工作机制</h2><p>先从初始训练集训练出一个基学习器，再根据基学习器的表现对训练样本分布进行调整，<strong>使得先前基学习器做错的训练样本在后续受到更多关注</strong>，然后基于调整后的样本分布来训练下一个基学习器；如此重复进行，直至基学习器数目达到事先指定的值T ，最终将这T个基学习器进行加权结合。</p>
+<p><img src="/2023/06/12/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E5%85%AB%E7%AB%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/Boosting工作机制.png" alt="Boosting工作机制"></p>
+<h2 id="8-2-2-Boosting族算法的著名代表——AdaBoost算法"><a href="#8-2-2-Boosting族算法的著名代表——AdaBoost算法" class="headerlink" title="8.2.2 Boosting族算法的著名代表——AdaBoost算法"></a>8.2.2 Boosting族算法的著名代表——AdaBoost算法</h2><p><img src="/2023/06/12/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E5%85%AB%E7%AB%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/AdaBoost.png" alt="AdaBoost"></p>
+<h2 id="8-2-3-Boosting算法总结"><a href="#8-2-3-Boosting算法总结" class="headerlink" title="8.2.3 Boosting算法总结"></a>8.2.3 Boosting算法总结</h2><ol>
+<li>Boosting算法要求基学习器能对特定数据分布进行学习，这可通过<strong>重赋权法（re-weighting）</strong>实施，即在每轮训练中根据样本分布为每个训练样本重新赋权。</li>
+<li>针对无法接受带权样本的基学习算法，可以通过<strong>重采样法（re-sampling）</strong>来处理，即在每轮学习中，根据样本分布对训练集重新采样（等价于根据样本分布为每个训练样本重新赋权），再利用重采样得到的样本集对基学习器进行训练。</li>
+<li>Boosting算法中个体学习器之间存在强依赖关系，且是<strong>串行</strong>生成的。</li>
+<li>Boosting算法主要关注降低<strong>偏差</strong>，因此能基于泛化性能相当弱的学习器构建出很强的集成。</li>
+</ol>
+<h1 id="8-3-Bagging与随机森林"><a href="#8-3-Bagging与随机森林" class="headerlink" title="8.3 Bagging与随机森林"></a>8.3 Bagging与随机森林</h1><p>由于对个体学习器所要求的“好”和“不同”互相冲突，因此为了缓解这个问题，可以使用<strong>互相有交叠的采样子集</strong>。</p>
+<h2 id="8-3-1-Bagging"><a href="#8-3-1-Bagging" class="headerlink" title="8.3.1 Bagging"></a>8.3.1 Bagging</h2><p><strong>采样方法</strong>：自助采样法（bootstrap sampling）——有放回、可重复采样。由于只使用了初始训练集中大约63.2%的样本，因此剩下36.8%的样本可以作为验证集来对泛化性能进行<strong>包外估计（out-of-bag estimate）</strong>，或者是用作决策树算法中的辅助剪枝，亦或是用作神经网络中的早停法降低过拟合风险。</p>
+<p><strong>结合策略</strong></p>
+<ul>
+<li>针对<strong>分类</strong>任务：简单投票法</li>
+<li>针对<strong>回归</strong>任务：简单平均法</li>
+</ul>
+<p><img src="/2023/06/12/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E5%85%AB%E7%AB%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/bagging.png" alt="bagging"></p>
+<h2 id="8-3-2-随机森林"><a href="#8-3-2-随机森林" class="headerlink" title="8.3.2 随机森林"></a>8.3.2 随机森林</h2><p><strong>随机森林（Random Forest，简称RF）</strong>：决策树+Bagging。RF中基学习器的多样性不仅来自样本扰动，也来自属性扰动，这使得RF的训练效率和泛化性能往往优于Bagging。</p>
+<p><img src="/2023/06/12/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E5%85%AB%E7%AB%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/RF和Bagging对比.png" alt="RF和Bagging对比"></p>
+<h2 id="8-3-3-Bagging算法与随机森林算法总结"><a href="#8-3-3-Bagging算法与随机森林算法总结" class="headerlink" title="8.3.3 Bagging算法与随机森林算法总结"></a>8.3.3 Bagging算法与随机森林算法总结</h2><ol>
+<li>Bagging算法与随机森林算法的个体学习器之间不存在强依赖关系，且是<strong>并行</strong>生成的。</li>
+<li>Bagging算法与随机森林算法主要关注降低<strong>方差</strong>，因此在不剪枝决策树、神经网络等易受样本扰动的学习器上效用更明显。</li>
+</ol>
+<h1 id="8-4-结合策略（基学习器如何结合使得集成学习效果好？）"><a href="#8-4-结合策略（基学习器如何结合使得集成学习效果好？）" class="headerlink" title="8.4 结合策略（基学习器如何结合使得集成学习效果好？）"></a>8.4 结合策略（基学习器如何结合使得集成学习效果好？）</h1><p><strong>学习器结合的好处</strong>：</p>
+<ul>
+<li>统计方面：由于学习任务的假设空间大，可能有多个假设能有相同性能，结合多个学习器可以减少误选导致的泛化性能不佳的问题。</li>
+<li>计算方面：降低学习算法陷入局部极小值陷阱。</li>
+<li>表示方面：某些学习任务的真实假设并不在当前算法的假设空间中，结合多个学习器可以扩大这个假设空间，更有可能学习到真实假设。</li>
+</ul>
+<p><img src="/2023/06/12/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E5%85%AB%E7%AB%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/学习器结合的三个好处.png" alt="学习器结合的三个好处"></p>
+<h2 id="8-4-1-平均法"><a href="#8-4-1-平均法" class="headerlink" title="8.4.1 平均法"></a>8.4.1 平均法</h2><p>对于<strong>数值型</strong>输出，最常见的结合策略是平均法（averaging）。</p>
+<ul>
+<li><strong>简单平均法（simple averaging）</strong>：</li>
+</ul>
+<script type="math/tex; mode=display">
+H(x)=\frac{1}{T}\sum_{i=1}^Th_i(x)</script><ul>
+<li><strong>加权平均法（weighted averaging）</strong>：</li>
+</ul>
+<script type="math/tex; mode=display">
+H(x)=\sum_{i=1}^Tw_ih_i(x)</script><p>​        其中<script type="math/tex">w_i</script>是个体学习器<script type="math/tex">h_i</script>的权重，通常要求<script type="math/tex">w_i\geq 0</script>且<script type="math/tex">\sum_{i=1}^Tw_i=1</script>。</p>
+<blockquote>
+<p>一般而言：</p>
+<p>在个体学习器性能相差较大时宜使用加权平均法</p>
+<p>在个体学习器性能相差较小时宜使用简单平均法</p>
+</blockquote>
+<h2 id="8-4-2-投票法"><a href="#8-4-2-投票法" class="headerlink" title="8.4.2 投票法"></a>8.4.2 投票法</h2><p>对于<strong>分类任务</strong>来说，最常见的结合策略是投票法（voting）。</p>
+<ul>
+<li><strong>绝对多数投票法（majority voting）</strong>：若某标记的票超过半数，则预测为该标记；否则拒绝预测</li>
+</ul>
+<script type="math/tex; mode=display">
+H(x)=
+\begin{cases}
+c_j,\quad if \sum_{i=1}^Th_i^j(x)>0.5\sum_{k=1}^N\sum_{i=1}^Th_i^k(x)\\
+reject,\quad otherwise
+\end{cases}</script><ul>
+<li><strong>相对多数投票法（plurality voting）</strong>：预测为得票最多的标记，若同时有多个标记得票最高，则从中随机选一个</li>
+</ul>
+<script type="math/tex; mode=display">
+H(x)=c_{\underset{j}{\arg\max}\ \sum_{i=1}^Th_i^j(x)}</script><ul>
+<li><strong>加权投票法（weighted voting）</strong></li>
+</ul>
+<script type="math/tex; mode=display">
+H(x)=c_{\underset{j}{\arg\max}\ \sum_{i=1}^Tw_ih_i^j(x)}</script><p>​        其中<script type="math/tex">w_i</script>是个体学习器<script type="math/tex">h_i</script>的权重，通常要求<script type="math/tex">w_i\geq 0</script>且<script type="math/tex">\sum_{i=1}^Tw_i=1</script>。</p>
+<blockquote>
+<p>现实任务中，不同个体学习器的输出值类型往往不同（常见的有<strong>类标记</strong>和<strong>类概率</strong>），但不能直接混用。</p>
+</blockquote>
+<h2 id="8-4-3-学习法"><a href="#8-4-3-学习法" class="headerlink" title="8.4.3 学习法"></a>8.4.3 学习法</h2><p>当<strong>训练数据很多</strong>时，可采用更为强大的结合策略“学习法”——即通过<strong>另一个学习器（次级学习器/元学习器）</strong>来进行结合。</p>
+<ul>
+<li><strong>贝叶斯模型平均（Bayes Model Averaging，简称BMA）</strong>：基于后验概率来对不同模型赋予权重，可以视作加权平均法的特殊实现，但对近似误差敏感。</li>
+<li><strong>Stacking集成算法</strong>：通常优于BMA，鲁棒性更好。</li>
+</ul>
+<p><img src="/2023/06/12/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E5%85%AB%E7%AB%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/stacking.png" alt="stacking"></p>
+<h1 id="8-5-多样性"><a href="#8-5-多样性" class="headerlink" title="8.5 多样性"></a>8.5 多样性</h1><h2 id="8-5-1-误差-分歧分解"><a href="#8-5-1-误差-分歧分解" class="headerlink" title="8.5.1 误差-分歧分解"></a>8.5.1 误差-分歧分解</h2><p><strong>误差-分歧分解（error-ambiguity decomposition）</strong>：从理论上证明了个体学习器应“好而不同”。</p>
+<h2 id="8-5-2-多样性度量"><a href="#8-5-2-多样性度量" class="headerlink" title="8.5.2 多样性度量"></a>8.5.2 多样性度量</h2><p><strong>多样性度量（diversity measure）</strong>：用于度量集成中个体分类器的多样性，即估算个体学习器的多样化程度。</p>
+<p><strong>常见的多样性度量</strong>：</p>
+<p>给定数据集D，对于二分类任务<script type="math/tex">y_i\in \{-1,+1\}</script>，两个分类器<script type="math/tex">h_i</script>和<script type="math/tex">h_j</script>的预测结果列联表（contingency table）为</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center"><script type="math/tex">h_i=+1</script></th>
+<th style="text-align:center"><script type="math/tex">h_i=-1</script></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><script type="math/tex">h_j=+1</script></td>
+<td style="text-align:center">a</td>
+<td style="text-align:center">c</td>
+</tr>
+<tr>
+<td style="text-align:center"><script type="math/tex">h_j=-1</script></td>
+<td style="text-align:center">b</td>
+<td style="text-align:center">\d</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>其中a+b+c+d=m。</p>
+<ul>
+<li><strong>不合度量（disagreement measure）</strong>：</li>
+</ul>
+<script type="math/tex; mode=display">
+dis_{ij}=\frac{b+c}{m}</script><p>​        <script type="math/tex">dis_{ij}</script>值越大，多样性越大</p>
+<ul>
+<li><strong>相关系数（correlation coefficient）</strong>：</li>
+</ul>
+<script type="math/tex; mode=display">
+\rho_{ij}=\frac{ad-bc}{\sqrt{(a+b)(a+c)(c+d)(b+d)}}</script><p>​        若<script type="math/tex">h_i</script>和<script type="math/tex">h_j</script>无关，则<script type="math/tex">\rho_{ij}=0</script>；若<script type="math/tex">h_i</script>和<script type="math/tex">h_j</script>正相关，则<script type="math/tex">\rho_{ij}>0</script>；若<script type="math/tex">h_i</script>和<script type="math/tex">h_j</script>负相关，则<script type="math/tex">\rho_{ij}<0</script>。</p>
+<ul>
+<li><strong>Q-统计量（Q-statistic）</strong>：</li>
+</ul>
+<script type="math/tex; mode=display">
+Q_{ij}=\frac{ad-bc}{ad+bc}</script><ul>
+<li><strong><script type="math/tex">\kappa</script>-统计量（<script type="math/tex">\kappa</script>-statistic）</strong>：</li>
+</ul>
+<script type="math/tex; mode=display">
+\kappa=\frac{p_1-p_2}{1-p_2}</script><p>​        其中，<script type="math/tex">p_1</script>是两个分类器取得一致的概率，<script type="math/tex">p_2</script>是两个分类器偶然达成一致的概率，可由数据集D估算：</p>
+<script type="math/tex; mode=display">
+p_1=\frac{a+d}{m}</script><script type="math/tex; mode=display">
+p_2=\frac{(a+b)(a+c)+(c+d)(b+d)}{m^2}</script><p>​        若两个分类器<script type="math/tex">h_i</script>和<script type="math/tex">h_j</script>在D上完全一致，则<script type="math/tex">\kappa=1</script>；若它们只是偶然达成一致，则<script type="math/tex">\kappa=0</script>。</p>
+<blockquote>
+<p>注：偶然一致率<script type="math/tex">p_2</script>还可以写成</p>
+<script type="math/tex; mode=display">
+p_2=\frac{a+b}{m}\times\frac{a+c}{m}+\frac{c+d}{m}\times\frac{b+d}{m}</script><p>加号前后两项分别表示为分类器<script type="math/tex">h_i</script>和<script type="math/tex">h_j</script>将样本预测为+1的概率和将样本预测为-1的概率</p>
+</blockquote>
+<h2 id="8-5-3-多样性增强"><a href="#8-5-3-多样性增强" class="headerlink" title="8.5.3 多样性增强"></a>8.5.3 多样性增强</h2><p><strong>主要思路</strong>：在学习过程中引入随机性</p>
+<p><strong>常见方法</strong>：</p>
+<ul>
+<li>数据样本扰动</li>
+<li>输入属性扰动</li>
+<li>输出表示扰动</li>
+<li>算法参数扰动</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2023/06/10/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%B8%83%E7%AB%A0-%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%88%86%E7%B1%BB%E5%99%A8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1858,7 +2072,7 @@ E(f;D)=bias^2(x)+var(x)+\epsilon^2</script><p><strong>偏差-方差窘境（bias
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-count">10</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1909,7 +2123,7 @@ E(f;D)=bias^2(x)+var(x)+\epsilon^2</script><p><strong>偏差-方差窘境（bias
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共15.3k字</span>
+  <span class="post-count">博客全站共17.3k字</span>
 </div>
         
 
