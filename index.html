@@ -192,6 +192,236 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/06/13/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%B9%9D%E7%AB%A0-%E8%81%9A%E7%B1%BB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="nashswift">
+      <meta itemprop="description" content="What matters is not your ability, but your choice.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="长野原烟花店">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/06/13/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%B9%9D%E7%AB%A0-%E8%81%9A%E7%B1%BB/" class="post-title-link" itemprop="url">周志华《机器学习》（AKA：西瓜书）笔记整理-第九章-聚类</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-06-13 13:53:41 / 修改时间：16:57:33" itemprop="dateCreated datePublished" datetime="2023-06-13T13:53:41+08:00">2023-06-13</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ML-study/" itemprop="url" rel="index"><span itemprop="name">ML study</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="9-1-聚类任务"><a href="#9-1-聚类任务" class="headerlink" title="9.1 聚类任务"></a>9.1 聚类任务</h1><p><strong>无监督学习（unsupervised learning）</strong>：训练样本的标记信息是<strong>未知</strong>的，目标是通过对无标记训练样本的学习来揭示数据的内在性质与规律，为进一步数据分析提供基础。</p>
+<p><strong>聚类（clustering）</strong>：试图将数据集中的样本划分为若干个通常不相交的子集，每个子集称为一个<strong>簇（cluster）</strong>。</p>
+<blockquote>
+<p>聚类的两种用法：</p>
+<ol>
+<li>作为一个单独的过程，用于寻找数据内在的粉结构</li>
+<li>作为分类等其他学习任务的前驱过程</li>
+</ol>
+</blockquote>
+<h1 id="9-2-性能度量"><a href="#9-2-性能度量" class="headerlink" title="9.2 性能度量"></a>9.2 性能度量</h1><p><strong>聚类性能度量/聚类“有效性指标”（validly index）</strong>：对聚类结果的好坏进行评估，也可以作为聚类过程的优化目标。一般的度量标准为：<strong>簇内相似度（intra-cluster similarity）高，簇间相似度（inter-cluster similarity）低</strong>。</p>
+<h2 id="9-2-1-外部指标"><a href="#9-2-1-外部指标" class="headerlink" title="9.2.1 外部指标"></a>9.2.1 外部指标</h2><p><strong>外部指标（external index）</strong>：将聚类结果与某个“参考模型”（reference model）进行比较。</p>
+<p>对数据集<script type="math/tex">D=\{x_1,x_2,...,x_m\}</script>，通过聚类给出的簇划分为<script type="math/tex">C=\{C_1,C_2,...,C_k\}</script>，参考模型给出的簇划分为<script type="math/tex">C^*=\{C_1^*,C_2^*,...,C_k^*\}</script>，令<script type="math/tex">\lambda</script>与<script type="math/tex">\lambda^*</script>分别表示<script type="math/tex">C</script>和<script type="math/tex">C^*</script>对应的簇标记向量。定义</p>
+<ol>
+<li><p><script type="math/tex">a=\lvert SS\rvert,\ SS=\{(x_i,x_j)|\lambda_i=\lambda_j,\lambda_i^*=\lambda_j^*,i<j\}</script>——两个样本在给出模型和参考模型上表现都相同</p>
+</li>
+<li><p><script type="math/tex">b=\lvert SD\rvert,\ SD=\{(x_i,x_j)|\lambda_i=\lambda_j,\lambda_i^*\neq\lambda_j^*,i<j\}</script>——两个样本在给出模型上表现相同，在参考模型上表现不同</p>
+</li>
+<li><p><script type="math/tex">c=\lvert DS\rvert,\ DS=\{(x_i,x_j)|\lambda_i\neq\lambda_j,\lambda_i^*=\lambda_j^*,i<j\}</script>——两个样本在给出模型上表现不同，在参考模型上表现相同</p>
+</li>
+<li><p><script type="math/tex">d=\lvert DD\rvert,\ DD=\{(x_i,x_j)|\lambda_i\neq\lambda_j,\lambda_i^*\neq\lambda_j^*,i<j\}</script>——两个样本在给出模型和参考模型上表现都不同</p>
+</li>
+</ol>
+<ul>
+<li><strong>Jaccard系数（Jacquard Coefficient，简称JC）</strong>：越大越好</li>
+</ul>
+<script type="math/tex; mode=display">
+JC=\frac{a}{a+b+c}</script><ul>
+<li><strong>FM指数（Fowlkes and Mallows Index，简称FMI）</strong>：越大越好</li>
+</ul>
+<script type="math/tex; mode=display">
+FMI=\sqrt{\frac{a}{a+b}\times\frac{a}{a+c}}</script><ul>
+<li><strong>Rand指数（Rand Index，简称RI）</strong>：越大越好</li>
+</ul>
+<script type="math/tex; mode=display">
+RI=\frac{2(a+d)}{m(m-1)}</script><h2 id="9-2-2-内部指标"><a href="#9-2-2-内部指标" class="headerlink" title="9.2.2 内部指标"></a>9.2.2 内部指标</h2><p><strong>内部指标（internal index）</strong>：直接考察聚类结果而不利用任何参考模型。</p>
+<p>对数据集<script type="math/tex">D=\{x_1,x_2,...,x_m\}</script>，通过聚类给出的簇划分为<script type="math/tex">C=\{C_1,C_2,...,C_k\}</script>。定义</p>
+<ol>
+<li><script type="math/tex">avg(C)=\frac{2}{\lvert C\rvert(\lvert C\rvert-1)}\sum_{1\leq i<j\leq\lvert C\rvert}dist(x_i,x_j)</script>——簇内两个样本之间的平均距离</li>
+<li><script type="math/tex">diam(C)=max_{1\leq i<j\leq\lvert C\rvert}dist(x_i,x_j)</script>——簇内两个样本点之间的最大距离</li>
+<li><script type="math/tex">d_{min}(C_i,C_j)=min_{x_i\in C_i,x_j\in C_j}dist(x_i,x_j)</script>——两簇最近样本点之间的距离</li>
+<li><script type="math/tex">d_{cen}(C_i,C_j)=dist(\mu_i,\mu_j)</script>——两簇中心点之间的距离</li>
+</ol>
+<ul>
+<li><strong>DB指数（Davies-Bouldin Index，简称DBI）</strong>：越小越好</li>
+</ul>
+<script type="math/tex; mode=display">
+DBI=\frac{1}{k}\sum_{i=1}^{k}\underset{j\neq i}{\max}\Big(\frac{avg(C_i)+avg(Cj)}{d_{cen}(C_i,C_j)}\Big)</script><ul>
+<li><strong>DI指数（Dunn-Index，简称DI）</strong>：越大越好</li>
+</ul>
+<script type="math/tex; mode=display">
+DI=\underset{i\leq i\leq k}{\min}\Big(\underset{j\neq i}{\min}\Big(\frac{d_{min}(C_i,C_j)}{max_{1\leq l\leq k}diam(C_l)}\Big)\Big)</script><h1 id="9-3-距离计算"><a href="#9-3-距离计算" class="headerlink" title="9.3 距离计算"></a>9.3 距离计算</h1><p><strong>距离度量（distance measure）</strong>需要满足的基本性质：</p>
+<ul>
+<li>非负性：<script type="math/tex">dist(x_i,x_j)\geq 0</script>；</li>
+<li>同一性：<script type="math/tex">dist(x_i,x_j)=0</script>当且仅当<script type="math/tex">x_i=x_j</script>；</li>
+<li>对称性：<script type="math/tex">dist(x_i,x_j)=dist(x_j,x_i)</script>；</li>
+<li>直递性：<script type="math/tex">dist(x_i,x_j)\leq dist(x_i,x_k)+dist(x_k,x_j)</script>。</li>
+</ul>
+<blockquote>
+<p>注：</p>
+<p>直递性通常被称为“三角不等式”，不满足直递性的距离称为<strong>非度量距离（non-metric distance）</strong>。对于某些现实任务，我们那不能使用定义好的距离公式，而是需要我们基于数据样本来确定合适的距离度量式，这可以通过<strong>距离度量学习（distance metric learning）</strong>实现。</p>
+</blockquote>
+<p><img src="/2023/06/13/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%B9%9D%E7%AB%A0-%E8%81%9A%E7%B1%BB/非度量距离.png" alt="非度量距离"></p>
+<h2 id="9-3-1-针对有序属性的距离计算"><a href="#9-3-1-针对有序属性的距离计算" class="headerlink" title="9.3.1 针对有序属性的距离计算"></a>9.3.1 针对有序属性的距离计算</h2><p><strong>有序属性（ordinal attribute）</strong>：能直接在属性值上计算距离。</p>
+<p>针对有序属性最常用的距离度量是<strong>闵可夫斯基距离（Minkowski distance）</strong>：</p>
+<script type="math/tex; mode=display">
+dist_{mk}(x_i,x_j)=\Bigg(\sum_{u=1}^n\lvert x_{iu}-x_{ju}\rvert^p\Bigg)^{\frac{1}{p}}</script><p>也可以写作<script type="math/tex">x_i-x_j</script>的<script type="math/tex">L_p</script>范数<script type="math/tex">\lVert x_i-x_j\rVert_p</script>。</p>
+<ul>
+<li>p=2时，闵可夫斯基距离即<strong>欧式距离（Euclidean distance）</strong>：</li>
+</ul>
+<script type="math/tex; mode=display">
+dist_{ed}(x_i,x_j)=\lVert x_i-x_j\rVert_2=\sqrt{\sum_{u=1}^n\lvert x_{iu}-x_{ju}\rvert^2}</script><ul>
+<li>p=1时，闵可夫斯基距离即<strong>曼哈顿距离（Manhattan distance）</strong>:</li>
+</ul>
+<script type="math/tex; mode=display">
+dist_{man}(x_i,x_j)=\lVert x_i-x_j\rVert_1=\sum_{u=1}^n\lvert x_{iu}-x_{ju}\rvert</script><ul>
+<li>p=∞时，闵可夫斯基距离即<strong>切比雪夫距离（Chebyshev distance）</strong>：</li>
+</ul>
+<script type="math/tex; mode=display">
+dist_\infty(x_i,x_j)=\max\lvert x_i-x_j\rvert</script><blockquote>
+<p>当样本空间中不同属性的重要性不同时，可以使用<strong>加权距离（weighted distance）</strong>。</p>
+</blockquote>
+<h2 id="9-3-2-针对无序属性的距离计算"><a href="#9-3-2-针对无序属性的距离计算" class="headerlink" title="9.3.2 针对无序属性的距离计算"></a>9.3.2 针对无序属性的距离计算</h2><p><strong>无序属性（non-ordinal attribute）</strong>：不能直接在属性值上计算距离。</p>
+<p>针对无序属性可以采用<strong>VDM（Value Difference Metric）</strong>：属性u上两个离散值a和b之间的VDM距离为</p>
+<script type="math/tex; mode=display">
+VDM_p(a,b)=\sum_{i=1}^k\Big\lvert{\frac{m_{u,a,i}}{m_{u,a}}-\frac{m_{u,b,i}}{m_{u,b}}}\Big\rvert^p</script><h2 id="9-3-3-针对混合属性的距离计算"><a href="#9-3-3-针对混合属性的距离计算" class="headerlink" title="9.3.3 针对混合属性的距离计算"></a>9.3.3 针对混合属性的距离计算</h2><p>将闵可夫斯基距离和VDM结合即可处理<strong>混合属性</strong>，假定有<script type="math/tex">n_c</script>个有序属性、<script type="math/tex">n-n_c</script>个无序属性，且有序属性排列在无序属性之前，则</p>
+<script type="math/tex; mode=display">
+MinkovDM_p(x_i,x_j)=\Bigg({\sum_{u=1}^{n_c}\lvert x_{iu}-x_{ju}\rvert^p-\sum_{u=n_c+1}^n}VDM_p(x_{iu},x_{ju})\Bigg)^\frac{1}{p}</script><h1 id="9-4-原型聚类"><a href="#9-4-原型聚类" class="headerlink" title="9.4 原型聚类"></a>9.4 原型聚类</h1><p><strong>原型</strong>：样本空间中具有代表性的点。</p>
+<p><strong>原型聚类/基于原型的聚类（prototype-based clustering）</strong>：假设聚类结构能够通过一组原型来刻画，采用不同的原型表示、不同的求解方式，将产生不同的算法。</p>
+<h2 id="9-4-1-k均值算法"><a href="#9-4-1-k均值算法" class="headerlink" title="9.4.1 k均值算法"></a>9.4.1 k均值算法</h2><p><strong>k均值（k-means）算法</strong>：针对聚类所得簇划分<script type="math/tex">C=\{C_1,C_2,...,C_k\}</script>最小化平方误差</p>
+<script type="math/tex; mode=display">
+E=\sum_{i=1}^k\sum_{x\in C_i}\lVert{x-\mu_i}\rVert_2^2</script><p>其中<script type="math/tex">\mu_i</script>是簇<script type="math/tex">C_i</script>的均值向量。直观上看，该式刻画了簇内样本围绕簇均值向量的紧密程度，E值越小则簇内样本相似度越高。</p>
+<p><img src="/2023/06/13/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%B9%9D%E7%AB%A0-%E8%81%9A%E7%B1%BB/k-means.png" alt="k-means"></p>
+<blockquote>
+<p>注：需要提前确定k的取值（一般取奇数），可采用交叉验证法和网格搜索。</p>
+</blockquote>
+<h2 id="9-4-2-学习向量量化"><a href="#9-4-2-学习向量量化" class="headerlink" title="9.4.2 学习向量量化"></a>9.4.2 学习向量量化</h2><p><strong>学习向量量化（Learning Vector Quantization，简称LVQ）</strong>：假设数据样本带有类别标记，学习过程中利用这些样本的监督信息来辅助聚类。目标是学得一组n维原型向量<script type="math/tex">\{p_1,p_2,...,p_q\}</script>，每个原型向量<script type="math/tex">p_i</script>定义了一个与之相关的区域<script type="math/tex">R_i</script>，该区域内每个样本与原型向量<script type="math/tex">p_i</script>的距离都不大于它与其他原型向量的距离，由此形成了对样本空间的簇划分<script type="math/tex">\{R_1,R_2,...,R_q\}</script>，该划分通常称为<strong>Voronoi剖分（Voronoi tessellation）</strong>。</p>
+<blockquote>
+<p>若将区域<script type="math/tex">R_i</script>中的样本全部用该区域对应的“代表”——原型向量<script type="math/tex">p_i</script>代替，则可以实现数据的<strong>有损压缩（lossy compression）</strong>，这一过程称为<strong>向量量化（vector quantization）</strong>。</p>
+</blockquote>
+<p><img src="/2023/06/13/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%B9%9D%E7%AB%A0-%E8%81%9A%E7%B1%BB/学习向量量化.png" alt="学习向量量化"></p>
+<p>LVQ算法的关键在第6-10行，即<strong>如何更新原型向量</strong>。对样本<script type="math/tex">x_j</script>来说：</p>
+<ul>
+<li>若最近的原型向量<script type="math/tex">p_{i^*}</script>与样本<script type="math/tex">x_j</script>的类别标记相同，则令原型向量<script type="math/tex">p_{i^*}</script>向样本<script type="math/tex">x_j</script>的方向靠拢。</li>
+<li>若最近的原型向量<script type="math/tex">p_{i^*}</script>与样本<script type="math/tex">x_j</script>的类别标记不同，则令原型向量<script type="math/tex">p_{i^*}</script>向样本<script type="math/tex">x_j</script>的方向远离。</li>
+</ul>
+<blockquote>
+<p>注：和k-means算法类似的是，需要提前确定原型向量的个数q。</p>
+</blockquote>
+<h2 id="9-4-3-高斯混合聚类"><a href="#9-4-3-高斯混合聚类" class="headerlink" title="9.4.3 高斯混合聚类"></a>9.4.3 高斯混合聚类</h2><p><strong>高斯混合（Mixture-of-Gaussian）聚类</strong>：采用概率模型来表达聚类模型。假定每个簇都服从高斯分布，高斯混合聚类的目的是为了区别出某个样本点是由哪个高斯分布生成的，以达到聚类的效果。</p>
+<p><strong>n维高斯分布</strong>：概率密度函数为<script type="math/tex">p(x)=\frac{1}{(2\pi)^{n/2}\lvert\Sigma\rvert^{1/2}}\exp(-\frac{1}{2}(x-\mu)^T\Sigma^{-1}(x-\mu))</script>，记作<script type="math/tex">p(x|\mu,\Sigma)</script>。</p>
+<p><strong>高斯混合分布（k个混合成分）</strong>：<script type="math/tex">p_M(x)=\sum_{i=1}^k\alpha_ip(x|\mu_i,\Sigma_i)</script></p>
+<p>令随机变量<script type="math/tex">z_j\in\{1,2,...,k\}</script>表示第j个样本的<strong>高斯混合成分</strong>（该样本应该被划分到哪个高斯分布/簇中）。显然有：</p>
+<ul>
+<li><script type="math/tex; mode=display">z_j$$的先验概率：$$P(z_j=i)=\alpha_i</script></li>
+<li><script type="math/tex">z_j</script>的后验概率：由贝叶斯定理得</li>
+</ul>
+<script type="math/tex; mode=display">
+p_M(z_j=i|x_j)=\frac{P(z_j=i)p_M(x_j|z_j=i)}{p_M(x_j)}=\frac{\alpha_i p(x_j|\mu_i,\Sigma_i)}{\sum_{l=1}^k\alpha_lp(x_j|\mu_l,\Sigma_l)}</script><p>则第j个样本的簇标记为：<script type="math/tex">\lambda_j=\underset{i\in\{1,2,...,k\}}{\arg\max}p_M(z_j=i|x_j)</script>，可以利用EM算法进行迭代求解。</p>
+<p><img src="/2023/06/13/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%B9%9D%E7%AB%A0-%E8%81%9A%E7%B1%BB/高斯混合聚类.png" alt="高斯混合聚类"></p>
+<h1 id="9-5-密度聚类"><a href="#9-5-密度聚类" class="headerlink" title="9.5 密度聚类"></a>9.5 密度聚类</h1><p><strong>密度聚类/基于密度的聚类（density-based clustering）</strong>：假设聚类结构能通过<strong>样本分布的紧密程度</strong>确定，通常情况下，密度聚类算法从样本密度（单位区域内有多少点）来考察样本之间的可连接性，并基于可连接样本不断扩展聚类簇以获得最终聚类结果。</p>
+<p><strong>DBSCAN（Density-Based Spatial Clustering of Applications with Noise）算法</strong>：基于一组<strong>邻域（neighborhood）</strong>参数来刻画样本分布的紧密程度。定义概念：</p>
+<ul>
+<li><strong><script type="math/tex">\epsilon</script>-邻域</strong>：包含距离中心点距离不大于<script type="math/tex">\epsilon</script>的样本。</li>
+<li><strong>核心对象（core object）</strong>：核心对象的<script type="math/tex">\epsilon</script>-邻域内至少有MinPts个样本（附近点足够密集）。</li>
+<li><strong>密度直达（directly density-reachable）</strong>：核心对象到其<script type="math/tex">\epsilon</script>-邻域内的点是密度直达的。</li>
+<li><strong>密度可达（density-reachable）</strong>：两个样本点之间存在密度直达的样本序列，则这两个样本点密度可达（满足直递性）。</li>
+<li><strong>密度相连（density-connected）</strong>：对于两个样本点，若存在第三个样本点使得这两个样本点均由它密度可达，则这两个样本点密度相连（满足对称性）。</li>
+</ul>
+<p><img src="/2023/06/13/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%B9%9D%E7%AB%A0-%E8%81%9A%E7%B1%BB/DBSCAN概念.png" alt="DBSCAN概念"></p>
+<p>基于这些概念，DBSCAN将<strong>簇</strong>定义为：由密度可达关系导出的最大的密度相连样本集合，满足</p>
+<ol>
+<li><strong>连接性（connectivity）</strong>：簇内所有点都做到密度相连</li>
+<li><strong>最大性（maximality）</strong>：所有密度相连的点都囊括在簇内</li>
+</ol>
+<p><img src="/2023/06/13/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%B9%9D%E7%AB%A0-%E8%81%9A%E7%B1%BB/DBSCAN.png" alt="DBSCAN"></p>
+<h1 id="9-6-层次聚类"><a href="#9-6-层次聚类" class="headerlink" title="9.6 层次聚类"></a>9.6 层次聚类</h1><p><strong>层次聚类（hierarchical clustering）</strong>：试图在不同层次对数据集进行划分，从而形成<strong>树形</strong>的聚类结构。</p>
+<blockquote>
+<p>数据集划分的两种策略：</p>
+<ul>
+<li>自底向上的聚合策略（小簇合成大簇）</li>
+<li>自顶向下的分拆策略（大簇拆成小簇）</li>
+</ul>
+</blockquote>
+<p><strong>AGNES（AGglomerative NESting）算法</strong>（采用自底向上聚合策略）：先将数据集中的每个样本看作一个初始聚类簇，然后在算法运行的每一步找到距离最近的两个簇合并，不断重复直到达到预设的聚类簇个数/运行次数/簇间距大于某个阈值。</p>
+<p><strong>重点：聚类簇之间距离的计算</strong>：</p>
+<ul>
+<li><strong>最小距离</strong>：由两个簇的最近样本决定，此时AGNES算法被称为单链接（single-linkage）算法</li>
+</ul>
+<script type="math/tex; mode=display">
+d_{min}(C_i,C_j)=\underset{x\in C_i,z\in C_j}{\min}dist(x,z)</script><ul>
+<li><strong>最大距离</strong>：由两个簇的最远样本决定，此时AGNES算法被称为全链接（complete-linkage）算法</li>
+</ul>
+<script type="math/tex; mode=display">
+d_{max}(C_i,C_j)=\underset{x\in C_i,z\in C_j}{\max}dist(x,z)</script><ul>
+<li><strong>平均距离</strong>：由两个簇的所有样本共同决定，此时AGNES算法被称为均链接（average-linkage）算法</li>
+</ul>
+<script type="math/tex; mode=display">
+d_{avg}(C_i,C_j)=\frac{1}{\lvert C_i\rvert\lvert C_j\rvert}\sum_{x\in C_i}\sum_{z\in C_j}dist(x,z)</script><blockquote>
+<p>注：若簇的形状比较规则，也可以使用簇中心点之间的距离进行衡量。</p>
+</blockquote>
+<p><img src="/2023/06/13/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%B9%9D%E7%AB%A0-%E8%81%9A%E7%B1%BB/AGNES.png" alt="AGNES"></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2023/06/12/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E5%85%AB%E7%AB%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1932,80 +2162,11 @@ E(f;D)=bias^2(x)+var(x)+\epsilon^2</script><p><strong>偏差-方差窘境（bias
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2023/06/04/hello-world/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="nashswift">
-      <meta itemprop="description" content="What matters is not your ability, but your choice.">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="长野原烟花店">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/06/04/hello-world/" class="post-title-link" itemprop="url">Hello World</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2023-06-04 00:01:20" itemprop="dateCreated datePublished" datetime="2023-06-04T00:01:20+08:00">2023-06-04</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+  </nav>
 
 
 
@@ -2072,7 +2233,7 @@ E(f;D)=bias^2(x)+var(x)+\epsilon^2</script><p><strong>偏差-方差窘境（bias
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-count">11</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -2123,7 +2284,7 @@ E(f;D)=bias^2(x)+var(x)+\epsilon^2</script><p><strong>偏差-方差窘境（bias
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共17.3k字</span>
+  <span class="post-count">博客全站共17.6k字</span>
 </div>
         
 
