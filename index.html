@@ -192,6 +192,157 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/06/16/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E5%8D%81%E7%AB%A0-%E9%99%8D%E7%BB%B4%E4%B8%8E%E5%BA%A6%E9%87%8F%E5%AD%A6%E4%B9%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="nashswift">
+      <meta itemprop="description" content="What matters is not your ability, but your choice.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="长野原烟花店">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/06/16/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E5%8D%81%E7%AB%A0-%E9%99%8D%E7%BB%B4%E4%B8%8E%E5%BA%A6%E9%87%8F%E5%AD%A6%E4%B9%A0/" class="post-title-link" itemprop="url">周志华《机器学习》（AKA：西瓜书）笔记整理-第十章-降维与度量学习</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-06-16 10:31:42 / 修改时间：22:28:33" itemprop="dateCreated datePublished" datetime="2023-06-16T10:31:42+08:00">2023-06-16</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ML-study/" itemprop="url" rel="index"><span itemprop="name">ML study</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="10-1-k近邻学习"><a href="#10-1-k近邻学习" class="headerlink" title="10.1 k近邻学习"></a>10.1 k近邻学习</h1><p><strong>k近邻（k-Nearest Neighbor）学习</strong>：是一种常用的监督学习方法。给定测试样本，基于某种距离度量找出训练集中与其最靠近的k个训练样本，然后基于这k个“邻居”的信息进行预测。</p>
+<p><img src="/2023/06/16/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E5%8D%81%E7%AB%A0-%E9%99%8D%E7%BB%B4%E4%B8%8E%E5%BA%A6%E9%87%8F%E5%AD%A6%E4%B9%A0/k近邻分类器.png" alt="k近邻分类器"></p>
+<p><strong>最近邻分类器</strong>：1NN，即k=1。</p>
+<p><strong>懒惰学习与急切学习</strong>：</p>
+<ul>
+<li>懒惰学习（lazy learning）：在训练阶段只是把样本保存起来（训练开销为0），待收到测试样本之后再进行处理</li>
+<li>急切学习（eager learning）：在训练阶段就对样本进行学习处理的方法</li>
+</ul>
+<blockquote>
+<p>k近邻学习是懒惰学习的代表。</p>
+</blockquote>
+<h1 id="10-2-低维嵌入"><a href="#10-2-低维嵌入" class="headerlink" title="10.2 低维嵌入"></a>10.2 低维嵌入</h1><p><strong>维数灾难/维数诅咒（curse of dimensionality）</strong>：在高维情形下会出现数据样本系数、距离计算困难等问题，是所有机器学习算法共同面临的严重障碍。</p>
+<p><strong>降维（dimension reduction）/维数约简</strong>：通过某种数学变换将原始高维属性空间转变为一个低维<strong>“子空间”（subspace）</strong>，在这个子空间中样本密度大幅提高，距离计算也变得更为容易。</p>
+<p><strong>可以进行降维的原因：</strong>很多时候观测或收集到的数据样本虽然是高维的，但是与学习任务密切相关的也许只是某个低维分布（存在冗余维度信息），即高维空间的一个<strong>低维嵌入（embedding）</strong>。</p>
+<p><img src="/2023/06/16/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E5%8D%81%E7%AB%A0-%E9%99%8D%E7%BB%B4%E4%B8%8E%E5%BA%A6%E9%87%8F%E5%AD%A6%E4%B9%A0/低维嵌入.png" alt="低维嵌入"></p>
+<h1 id="10-3-降维方法"><a href="#10-3-降维方法" class="headerlink" title="10.3 降维方法"></a>10.3 降维方法</h1><p>一般来说，想要获得低维子空间，最简单的方法是对原始高维空间进行线性变换（<strong>线性降维方法</strong>）。给定d维空间中的样本<script type="math/tex">X=(x_1,x_2, ...,x_m)\in R^{d\times m}</script>，变换后得到<script type="math/tex">d'\ll d</script>维空间中的样本</p>
+<script type="math/tex; mode=display">
+Z=W^TX</script><p>其中<script type="math/tex">W\in R^{d\times d'}</script>是变换矩阵，<script type="math/tex">Z\in R^{d'\times m}</script>是样本在新空间中的表达。</p>
+<h2 id="10-3-1-多维缩放MDS"><a href="#10-3-1-多维缩放MDS" class="headerlink" title="10.3.1 多维缩放MDS"></a>10.3.1 多维缩放MDS</h2><p><strong>多维缩放（Multiple Dimensional Scaling，简称MDS）</strong>：基本思想是使原始空间中的样本距离在低维空间中仍然能够保持，即降维前后距离不变。</p>
+<p>假定m个样本在原始空间的距离矩阵为<script type="math/tex">D\in R^{m\times m}</script>，其中第i行j列的元素<script type="math/tex">dist_ij</script>是样本<script type="math/tex">x_i</script>到样本<script type="math/tex">x_j</script>之间的距离。我们的目的是获取样本在<script type="math/tex">d'</script>维（<script type="math/tex">d'\leq d</script>）空间中的表示<script type="math/tex">Z\in R^{d'\times m}</script>，且任意两个样本在低维空间中的欧式距离等于原始空间中的距离，即<script type="math/tex">\lVert z_i-z_j\rVert=dist_{ij}</script>。</p>
+<p>令<script type="math/tex">B=Z^TZ\in R^{m\times m}</script>，B为降维之后样本的内积矩阵，<script type="math/tex">b_{ij}=z_i^Tz_j</script>，令</p>
+<ul>
+<li><script type="math/tex; mode=display">dist_{i·}^2=\frac{1}{m}\sum_{j=1}^mdist_{ij}^2</script></li>
+<li><script type="math/tex; mode=display">dist_{·j}^2=\frac{1}{m}\sum_{i=1}^mdist_{ij}^2</script></li>
+<li><script type="math/tex; mode=display">dist_{··}^2=\frac{1}{m^2}\sum_{i=1}^m\sum_{j=1}^mdist_{ij}^2</script></li>
+</ul>
+<p>而<script type="math/tex">b_{ij}=-\frac{1}{2}(dist_{ij}^2-dist_{i·}^2-dist_{·j}^2+dist_{··}^2)</script>，由此可以通过降维前后保持不变的距离矩阵D计算内积矩阵B，对B做<strong>特征值分解（eigenvalue decomposition）</strong>，取最大的<script type="math/tex">d'</script>个特征值构成对角矩阵<script type="math/tex">\tilde{\Lambda}</script>，对应的特征向量构成特征向量矩阵<script type="math/tex">\tilde{V}</script>，则<script type="math/tex">Z=\tilde{\Lambda}^{1/2}\tilde{V}^T\in R^{d'\times m}</script>。</p>
+<p><img src="/2023/06/16/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E5%8D%81%E7%AB%A0-%E9%99%8D%E7%BB%B4%E4%B8%8E%E5%BA%A6%E9%87%8F%E5%AD%A6%E4%B9%A0/MDS.png" alt="MDS"></p>
+<blockquote>
+<p>总结：</p>
+<p>由于降维前后距离不变，因此降维前后的距离矩阵不变。可以通过推导降维后内积矩阵和距离矩阵的关系，转换为降维后内积矩阵和降维前距离矩阵的关系，最后再将降维矩阵表示出来。</p>
+</blockquote>
+<h2 id="10-3-2-主成分分析PCA"><a href="#10-3-2-主成分分析PCA" class="headerlink" title="10.3.2 主成分分析PCA"></a>10.3.2 主成分分析PCA</h2><p><strong>主成分分析（Principal Component Analysis，简称PCA）</strong>：利用一个超平面对所有样本进行恰当的表达，那么这个超平面应该具有<strong>最近重构性</strong>和<strong>最大可分性</strong>，分别从这两个角度可以得到PCA的两种等价推导。</p>
+<ul>
+<li>从<strong>最近重构性</strong>角度出发：样本点到这个超平面距离足够近。</li>
+</ul>
+<script type="math/tex; mode=display">
+\begin{split}
+\underset{W}{\min}\ -tr(W^TXX^TW)\\
+s.t.\ W^TW=I
+\end{split}</script><ul>
+<li>从<strong>最大可分性</strong>角度出发：样本点在这个超平面上的投影尽可能分开。</li>
+</ul>
+<script type="math/tex; mode=display">
+\begin{split}
+\underset{W}{\max}\ tr(W^TXX^TW)\\
+s.t.\ W^TW=I
+\end{split}</script><p>对任意一个式子使用拉格朗日乘子法得</p>
+<script type="math/tex; mode=display">
+XX^Tw_i=\lambda_iw_i</script><p>对协方差矩阵<script type="math/tex">XX^T</script>进行特征值分解，取最大的<script type="math/tex">d'</script>个特征值对应的特征向量构成矩阵<script type="math/tex">W^*=(w_1,w_2,...,w_{d'})</script>，这就是PCA的解。</p>
+<p><img src="/2023/06/16/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E5%8D%81%E7%AB%A0-%E9%99%8D%E7%BB%B4%E4%B8%8E%E5%BA%A6%E9%87%8F%E5%AD%A6%E4%B9%A0/PCA.png" alt="PCA"></p>
+<h2 id="10-3-3-核化线性降维"><a href="#10-3-3-核化线性降维" class="headerlink" title="10.3.3 核化线性降维"></a>10.3.3 核化线性降维</h2><p>实际任务中，使用线性降维方法对样本点进行降维是，可能会丢失原本的低维信息，我们需要使用非线性手段进行降维，其中常见的方法就是利用核技巧对线性降维方法进行<strong>“核化”</strong>。</p>
+<p><img src="/2023/06/16/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E5%8D%81%E7%AB%A0-%E9%99%8D%E7%BB%B4%E4%B8%8E%E5%BA%A6%E9%87%8F%E5%AD%A6%E4%B9%A0/核化线性降维.png" alt="核化线性降维"></p>
+<h1 id="10-4-流行学习"><a href="#10-4-流行学习" class="headerlink" title="10.4 流行学习"></a>10.4 流行学习</h1><p><strong>流行学习（manifold learning）</strong>：借助高维空间的局部欧式距离性质进行降维，然后再设法将局部的映射关系推广到全局。</p>
+<h2 id="10-4-1-等度量映射"><a href="#10-4-1-等度量映射" class="headerlink" title="10.4.1 等度量映射"></a>10.4.1 等度量映射</h2><p><strong>等度量映射（Isometric Mapping，简称Isomap）</strong>：主要思想是在保持近邻样本点之间<strong>距离不变</strong>的情况下降维。与MDS不同的是，在高维空间计算距离的时候不使用欧式距离进行计算，而是用<strong>最近邻思想</strong>进行考虑：对每个点基于欧式距离找出近邻点，然后建立近邻连接图，于是<strong>计算两点之间测地线距离的问题就转变为计算近邻连接图上两点之间的最短路径问题</strong>，可以采用Dijkstra算法或是Floyd算法。</p>
+<p><img src="/2023/06/16/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E5%8D%81%E7%AB%A0-%E9%99%8D%E7%BB%B4%E4%B8%8E%E5%BA%A6%E9%87%8F%E5%AD%A6%E4%B9%A0/Isomap.png" alt="Isomap"></p>
+<h2 id="10-4-2-局部线性嵌入"><a href="#10-4-2-局部线性嵌入" class="headerlink" title="10.4.2 局部线性嵌入"></a>10.4.2 局部线性嵌入</h2><p><strong>局部线性嵌入（Locally Linear Embedding，简称LLE）</strong>：主要思想是在保持邻域内样本点之间的<strong>线性关系不变</strong>的情况下进行降维。假定样本点<script type="math/tex">x_i</script>的坐标能够由它的邻域样本<script type="math/tex">x_j</script>，<script type="math/tex">x_k</script>，<script type="math/tex">x_l</script>的坐标通过线性组合重构出来，即</p>
+<script type="math/tex; mode=display">
+x_i=w_{ij}x_j+w_{ik}x_k+w_{il}x_l</script><p>LLE希望上式关系能够在低维空间中得到保持。</p>
+<p><img src="/2023/06/16/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E5%8D%81%E7%AB%A0-%E9%99%8D%E7%BB%B4%E4%B8%8E%E5%BA%A6%E9%87%8F%E5%AD%A6%E4%B9%A0/高维空间的样本重构关系在低维空间保持.png" alt="高维空间的样本重构关系在低维空间保持"></p>
+<p><strong>LLE的优化目标为</strong>：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+\underset{Z}{\min}\ tr(ZMZ^T)\\
+s.t.\ ZZ^T=I
+\end{split}</script><p>其中<script type="math/tex">M=(I-W)^T(I-W)</script>。对上式进行特征值分解求解，M最小的<script type="math/tex">d'</script>个特征值对应的特征向量组成的矩阵即为<script type="math/tex">Z^T</script>。</p>
+<p><img src="/2023/06/16/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E5%8D%81%E7%AB%A0-%E9%99%8D%E7%BB%B4%E4%B8%8E%E5%BA%A6%E9%87%8F%E5%AD%A6%E4%B9%A0/LLE.png" alt="LLE"></p>
+<h1 id="10-5-度量学习"><a href="#10-5-度量学习" class="headerlink" title="10.5 度量学习"></a>10.5 度量学习</h1><p><strong>度量学习（metric learning）</strong>：直接尝试“学习”出一个合适的距离度量（在原高维空间中完成），从而找到合适的低维空间。</p>
+<p>对于两个d维的样本<script type="math/tex">x_i</script>和<script type="math/tex">x_j</script>：</p>
+<ul>
+<li>平方欧式距离</li>
+</ul>
+<script type="math/tex; mode=display">
+dist_{ed}^2(x_i,x_j)=(x_i-x_j)^T(x_i-w_j)</script><ul>
+<li>引入权重的平方欧式距离</li>
+</ul>
+<script type="math/tex; mode=display">
+dist_{wed}^2(x_i,x_j)=(x_i-x_j)^TW(x_i-w_j)</script><ul>
+<li>马氏距离（Mahalanobis distance）</li>
+</ul>
+<script type="math/tex; mode=display">
+dist_{mah}^2(x_i,x_j)=(x_i-x_j)^TM(x_i-w_j)</script><p>其中M称为度量矩阵，必须是（半）正定矩阵，而度量学习则是<strong>对M的学习</strong>。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2023/06/13/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%B9%9D%E7%AB%A0-%E8%81%9A%E7%B1%BB/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2094,74 +2245,6 @@ E(f;D)=bias^2(x)+var(x)+\epsilon^2</script><p><strong>偏差-方差窘境（bias
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2023/06/04/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E8%AF%B4%E6%98%8E/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="nashswift">
-      <meta itemprop="description" content="What matters is not your ability, but your choice.">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="长野原烟花店">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/06/04/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E8%AF%B4%E6%98%8E/" class="post-title-link" itemprop="url">个人博客的说明</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2023-06-04 14:53:53" itemprop="dateCreated datePublished" datetime="2023-06-04T14:53:53+08:00">2023-06-04</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-06-05 23:43:37" itemprop="dateModified" datetime="2023-06-05T23:43:37+08:00">2023-06-05</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="个人博客的说明"><a href="#个人博客的说明" class="headerlink" title="个人博客的说明"></a>个人博客的说明</h1><h3 id="一些废话"><a href="#一些废话" class="headerlink" title="一些废话"></a>一些废话</h3><p>本博客由Nash Swift于公元2023年6月4日，在福州市家中创建，其主要目的是记录本人在从事人工智能相关方向的学习和工作中的点滴琐碎。如果在将来的某一天，我的博客帮助到了某位朋友，在此提前说一声不客气^_^。如果需要联系本人，请发邮件至<a href="mailto:&#55;&#48;&#x39;&#x32;&#x32;&#x32;&#50;&#53;&#x31;&#x40;&#x71;&#113;&#46;&#99;&#x6f;&#109;">&#55;&#48;&#x39;&#x32;&#x32;&#x32;&#50;&#53;&#x31;&#x40;&#x71;&#113;&#46;&#99;&#x6f;&#109;</a>，我会及时地回复。由于这是本人第一次搭建个人博客，因此仍有许多不足之处，也以此勉励自己在未来的生活中不断学习精进，不断完善自身。</p>
-<h3 id="特别鸣谢"><a href="#特别鸣谢" class="headerlink" title="特别鸣谢"></a>特别鸣谢</h3><p>本人在此特别鸣谢我的父亲和母亲，你们对我的关心和爱让我成为了更加优秀的自己；感谢我家的泰迪狗（名：逗逗），你的可爱与陪伴温暖了我的家庭和我的心；感谢福州华伦中学2015届全体师生、感谢福州第一中学2018届全体师生、感谢中南大学机电工程学院机械设计制造及自动化专业2022届全体师生，以及在我漫漫求学之路上帮助过我的每一个人，你们见证了我过去的足迹，而我也将带着你们希冀的目光不断前行；感谢一位名为Mandy的可爱女孩，你陪伴我经历了最为宝贵的10年青春，是我最好最好最好的朋友，友谊地久天长！最后也提前感谢厦门大学信息学院人工智能研究院的各位老师，感谢smartdsp实验室的各位师生，在未来三年的研究生阶段能与诸位同行，是我极大的荣幸。<br>鄙人一介平民，才疏学浅，但却有着满腔热诚，希望未来的自己能始终坚定地走着自己的道路，不忘初心方得始终。<br>最后借用《红楼梦》中薛宝钗所作《临江仙·柳絮》中的一句话：好风凭借力，送我上青云！</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -2233,7 +2316,7 @@ E(f;D)=bias^2(x)+var(x)+\epsilon^2</script><p><strong>偏差-方差窘境（bias
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-count">12</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -2284,7 +2367,7 @@ E(f;D)=bias^2(x)+var(x)+\epsilon^2</script><p><strong>偏差-方差窘境（bias
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共17.6k字</span>
+  <span class="post-count">博客全站共19.3k字</span>
 </div>
         
 
