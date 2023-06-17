@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="11.1 子集搜索与评价特征选择（feature selection）：从给定的特征集合中选择出相关特征子集的过程，是一个重要的数据预处理（data preprocessing）过程。 原因有二：  特征选择可以在一定程度上缓解维数灾难问题 取出不相关的特征会降低学习任务的难度。   相关特征（relevant feature）：对当前学习任务有用的特征 无关特征（irrelevant featu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="周志华《机器学习》（AKA：西瓜书）笔记整理-第十一章-特征选择与稀疏学习">
+<meta property="og:url" content="http://example.com/2023/06/16/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E5%8D%81%E4%B8%80%E7%AB%A0-%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%E4%B8%8E%E7%A8%80%E7%96%8F%E5%AD%A6%E4%B9%A0/index.html">
+<meta property="og:site_name" content="长野原烟花店">
+<meta property="og:description" content="11.1 子集搜索与评价特征选择（feature selection）：从给定的特征集合中选择出相关特征子集的过程，是一个重要的数据预处理（data preprocessing）过程。 原因有二：  特征选择可以在一定程度上缓解维数灾难问题 取出不相关的特征会降低学习任务的难度。   相关特征（relevant feature）：对当前学习任务有用的特征 无关特征（irrelevant featu">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2023/06/16/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E5%8D%81%E4%B8%80%E7%AB%A0-%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%E4%B8%8E%E7%A8%80%E7%96%8F%E5%AD%A6%E4%B9%A0/LVW%E6%96%B9%E6%B3%95.png">
+<meta property="og:image" content="http://example.com/2023/06/16/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E5%8D%81%E4%B8%80%E7%AB%A0-%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%E4%B8%8E%E7%A8%80%E7%96%8F%E5%AD%A6%E4%B9%A0/L1%E6%AD%A3%E5%88%99%E5%8C%96%E4%B8%8EL2%E6%AD%A3%E5%88%99%E5%8C%96.png">
+<meta property="article:published_time" content="2023-06-16T14:47:55.000Z">
+<meta property="article:modified_time" content="2023-06-17T06:08:25.256Z">
+<meta property="article:author" content="nashswift">
+<meta property="article:tag" content="Machine Learning">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2023/06/16/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E5%8D%81%E4%B8%80%E7%AB%A0-%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%E4%B8%8E%E7%A8%80%E7%96%8F%E5%AD%A6%E4%B9%A0/LVW%E6%96%B9%E6%B3%95.png">
+
+<link rel="canonical" href="http://example.com/2023/06/16/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E5%8D%81%E4%B8%80%E7%AB%A0-%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%E4%B8%8E%E7%A8%80%E7%96%8F%E5%AD%A6%E4%B9%A0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>周志华《机器学习》（AKA：西瓜书）笔记整理-第十一章-特征选择与稀疏学习 | 长野原烟花店</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">长野原烟花店</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/06/16/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E5%8D%81%E4%B8%80%E7%AB%A0-%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%E4%B8%8E%E7%A8%80%E7%96%8F%E5%AD%A6%E4%B9%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="nashswift">
+      <meta itemprop="description" content="What matters is not your ability, but your choice.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="长野原烟花店">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          周志华《机器学习》（AKA：西瓜书）笔记整理-第十一章-特征选择与稀疏学习
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-06-16 22:47:55" itemprop="dateCreated datePublished" datetime="2023-06-16T22:47:55+08:00">2023-06-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-06-17 14:08:25" itemprop="dateModified" datetime="2023-06-17T14:08:25+08:00">2023-06-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ML-study/" itemprop="url" rel="index"><span itemprop="name">ML study</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="11-1-子集搜索与评价"><a href="#11-1-子集搜索与评价" class="headerlink" title="11.1 子集搜索与评价"></a>11.1 子集搜索与评价</h1><p><strong>特征选择（feature selection）</strong>：从给定的特征集合中选择出相关特征子集的过程，是一个重要的<strong>数据预处理（data preprocessing）</strong>过程。</p>
+<p>原因有二：</p>
+<ul>
+<li>特征选择可以在一定程度上缓解维数灾难问题</li>
+<li>取出不相关的特征会降低学习任务的难度。</li>
+</ul>
+<blockquote>
+<p>相关特征（relevant feature）：对当前学习任务有用的特征</p>
+<p>无关特征（irrelevant feature）：对当前学习任务无用的特征</p>
+<p>冗余特征（redundant feature）：降维中去掉的特征</p>
+</blockquote>
+<p><strong>两个关键环节</strong>：</p>
+<ol>
+<li>如何根据评价结果获取下一个候选特征子集？——<strong>子集搜索（subset serach）问题</strong></li>
+</ol>
+<ul>
+<li>前向（forward）搜索：每次选择最优的特征加入特征子集，假定在第k轮时，最优的候选特征子集不如上一轮，则停止生成候选子集，并使用上一轮的特征集合作为最终结果。</li>
+<li>后向（backward）搜索：从完整的特征集合开始，每次尝试去掉一个无关特征使得特征子集更优。</li>
+<li>双向（bidirectional）搜索：将前向搜索与后向搜索相结合，每一轮逐渐增加选定相关特征（这些特征在后续轮中不被去除）、同时减少无关特征。</li>
+</ul>
+<ol>
+<li>如何评价候选特征子集的好坏？——<strong>子集评价（subset evaluation）问题</strong></li>
+</ol>
+<p>可以利用决策树算法中的<strong>信息增益</strong>等准则进行子集评价。</p>
+<h1 id="11-2-常见的特征选择方法"><a href="#11-2-常见的特征选择方法" class="headerlink" title="11.2 常见的特征选择方法"></a>11.2 常见的特征选择方法</h1><h2 id="11-2-1-过滤式选择——以Relief方法为例"><a href="#11-2-1-过滤式选择——以Relief方法为例" class="headerlink" title="11.2.1 过滤式选择——以Relief方法为例"></a>11.2.1 过滤式选择——以Relief方法为例</h2><p><strong>过滤式（filter）选择</strong>：先对数据集进行特征选择，再训练学习器，特征选择与后续学习器无关。相当于在特征选择阶段对初始特征进行“过滤”，再用处理后的特征训练模型。</p>
+<p><strong>Relief（Relevant Features）方法</strong>：设计一个<strong>相关统计量</strong>来度量特征的重要性。给定训练集D，对其中每个示例<script type="math/tex">x_i</script>，先在其<strong>同类</strong>样本中找最近邻<script type="math/tex">x_{i,nh}</script>（猜中近邻near-hit），再在其<strong>异类</strong>样本中找最近邻<script type="math/tex">x_{i,nm}</script>（猜错近邻near-miss），然后相关统计量在属性j上分量为</p>
+<script type="math/tex; mode=display">
+\delta^i=\sum_i-diff(x_i^j,x_{i,nh}^j)^2+diff(x_i^j,x_{i,nm}^j)^2</script><p>我们希望这个分量越大越好，即<strong>猜错近邻的距离比较大，猜中近邻的距离比较小</strong>。若猜中近邻的距离比猜错近邻大，说明属性j起负面作用，应降低j对应的相关统计量分量。最后对不同样本的评估结果平均后就得到了哥哥属性的相关统计量分量，分量的值越大则说明对应属性的分类能力越强，应该选择它们。</p>
+<blockquote>
+<p>Relief方法是为二分类问题设计的，其拓展变体Relief-F可以处理多分类问题。</p>
+</blockquote>
+<h2 id="11-2-2-包裹式选择——以LVW方法为例"><a href="#11-2-2-包裹式选择——以LVW方法为例" class="headerlink" title="11.2.2 包裹式选择——以LVW方法为例"></a>11.2.2 包裹式选择——以LVW方法为例</h2><p><strong>包裹式（wrapper）选择</strong>：直接把最终要使用的学习器的性能作为特征子集的评价准则，其目的就是为给定了的学习器“量身定做”一个最好的特征子集。从最终性能上看，wrapper要比filter更好，但wrapper的计算开销大很多。</p>
+<p><strong>LVW（Las Vegas Wrapper）方法</strong>：在拉斯维加斯方法（Las Vegas method）框架下使用<strong>随机策略</strong>进行子集搜索，并使用最终的分类器误差作为特征子集的评价准则。（随便选，看哪个好）</p>
+<p><img src="/2023/06/16/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E5%8D%81%E4%B8%80%E7%AB%A0-%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%E4%B8%8E%E7%A8%80%E7%96%8F%E5%AD%A6%E4%B9%A0/LVW方法.png" alt="LVW方法"></p>
+<blockquote>
+<p>若初始特征数很多/有运行时间限制，算法可能运行找不到解。</p>
+</blockquote>
+<h2 id="11-2-3-嵌入式选择——以L1正则化为例"><a href="#11-2-3-嵌入式选择——以L1正则化为例" class="headerlink" title="11.2.3 嵌入式选择——以L1正则化为例"></a>11.2.3 嵌入式选择——以L1正则化为例</h2><p><strong>嵌入式（embedding）选择</strong>：将特征选择过程与学习器训练过程融为一体，即在学习器训练过程中自动进行特征选择。</p>
+<p><strong>L1正则化</strong>：基于L1正则化的学习方法就是一种嵌入式特征选择方法，其特征选择过程与学习器训练过程融为一体，同时完成。L1正则化问题优化目标为</p>
+<script type="math/tex; mode=display">
+\underset{x}{\min}f(x)+\lambda\lVert x\rVert_1</script><p>可以采用<strong>近端梯度下降法（Proximal Gradient Descent，简称PGD）</strong>方法进行求解。若函数f(x)可导，且<script type="math/tex">\nabla f(x)</script>满足L-Lipschitz条件（函数f没有突变点，梯度变化不大），即存在常数L&gt;0，使得</p>
+<script type="math/tex; mode=display">
+\frac{\lvert\nabla f(x')-\nabla f(x)\rvert}{\lvert x'-x\rvert}\leq L</script><p>类似梯度下降法，每一步的迭代应为</p>
+<script type="math/tex; mode=display">
+x_{k+1}=\underset{x}{\arg\min}\frac{L}{2}\Big\lVert x-\Big(x_k-\frac{1}{L}\nabla f(x_k)\Big)^2\Big\rVert_2+\lambda\lVert x\rVert_1</script><blockquote>
+<p>使用L1正则化而不是L2正则化的原因：</p>
+<p>L1正则化比L2正则化更容易获得稀疏（sparse）解。</p>
+</blockquote>
+<p><img src="/2023/06/16/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E5%8D%81%E4%B8%80%E7%AB%A0-%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%E4%B8%8E%E7%A8%80%E7%96%8F%E5%AD%A6%E4%B9%A0/L1正则化与L2正则化.png" alt="L1正则化与L2正则化"></p>
+<h1 id="11-3-稀疏表示与字典学习"><a href="#11-3-稀疏表示与字典学习" class="headerlink" title="11.3 稀疏表示与字典学习"></a>11.3 稀疏表示与字典学习</h1><p>考虑<strong>另一种稀疏性</strong>：数据集D所对应的矩阵中有很多零元素，但这些零元素不是以整列或整行的形式存在的。当样本具有这样的稀疏表达形式时，对学习任务来说会有不少好处。因此我们考虑对稠密的数据集D转换为<strong>稀疏表示（sparse representation）形式</strong>，从而享有这种“恰当稀疏”带来的好处。这种方法通常称为<strong>字典学习（dictionary learning）</strong>或<strong>稀疏编码（sparse coding）</strong>。</p>
+<p>字典学习的<strong>优化目标</strong>为</p>
+<script type="math/tex; mode=display">
+\underset{B,\alpha_i}{\min}\sum_{i=1}^m\lVert x_i-B\alpha_i\rVert_2^2+\lambda\sum_{i=1}^m\lVert\alpha_i\rVert_1</script><p>其中第一项表示样本的稀疏表示<script type="math/tex">\alpha_i</script>通过字典矩阵B重构之后能与样本的原始表示<script type="math/tex">x_i</script>尽可能相似，第二项表示</p>
+<p>希望<script type="math/tex">\alpha_i</script>尽可能稀疏。我们需要学习的参数有<script type="math/tex">\alpha_i</script>和B，因此可以采用<strong>变量交替优化</strong>的策略来求解上式，第一步固定字典B，找<script type="math/tex">\alpha_i</script>；第二步固定<script type="math/tex">\alpha_i</script>，更新字典B。</p>
+<h1 id="11-4-压缩感知"><a href="#11-4-压缩感知" class="headerlink" title="11.4 压缩感知"></a>11.4 压缩感知</h1><p><strong>压缩感知（compressed sensing）</strong>：信号传输的接收方基于收到的信号，利用信号本身具有的稀疏性来重构出原信号。压缩感知分为两个阶段：</p>
+<ul>
+<li><strong>感知测量</strong>：如何对原始信号进行处理以获得稀疏样本表示</li>
+<li><strong>重构恢复</strong>：如何基于稀疏性从少量观测中恢复原信号</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    
+      <div>
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:24px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+      </div>
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>nashswift
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2023/06/16/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E5%8D%81%E4%B8%80%E7%AB%A0-%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%E4%B8%8E%E7%A8%80%E7%96%8F%E5%AD%A6%E4%B9%A0/" title="周志华《机器学习》（AKA：西瓜书）笔记整理-第十一章-特征选择与稀疏学习">http://example.com/2023/06/16/周志华《机器学习》（AKA：西瓜书）笔记整理-第十一章-特征选择与稀疏学习/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Machine-Learning/" rel="tag"># Machine Learning</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/06/16/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E5%8D%81%E7%AB%A0-%E9%99%8D%E7%BB%B4%E4%B8%8E%E5%BA%A6%E9%87%8F%E5%AD%A6%E4%B9%A0/" rel="prev" title="周志华《机器学习》（AKA：西瓜书）笔记整理-第十章-降维与度量学习">
+      <i class="fa fa-chevron-left"></i> 周志华《机器学习》（AKA：西瓜书）笔记整理-第十章-降维与度量学习
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#11-1-%E5%AD%90%E9%9B%86%E6%90%9C%E7%B4%A2%E4%B8%8E%E8%AF%84%E4%BB%B7"><span class="nav-number">1.</span> <span class="nav-text">11.1 子集搜索与评价</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#11-2-%E5%B8%B8%E8%A7%81%E7%9A%84%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%E6%96%B9%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">11.2 常见的特征选择方法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#11-2-1-%E8%BF%87%E6%BB%A4%E5%BC%8F%E9%80%89%E6%8B%A9%E2%80%94%E2%80%94%E4%BB%A5Relief%E6%96%B9%E6%B3%95%E4%B8%BA%E4%BE%8B"><span class="nav-number">2.1.</span> <span class="nav-text">11.2.1 过滤式选择——以Relief方法为例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#11-2-2-%E5%8C%85%E8%A3%B9%E5%BC%8F%E9%80%89%E6%8B%A9%E2%80%94%E2%80%94%E4%BB%A5LVW%E6%96%B9%E6%B3%95%E4%B8%BA%E4%BE%8B"><span class="nav-number">2.2.</span> <span class="nav-text">11.2.2 包裹式选择——以LVW方法为例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#11-2-3-%E5%B5%8C%E5%85%A5%E5%BC%8F%E9%80%89%E6%8B%A9%E2%80%94%E2%80%94%E4%BB%A5L1%E6%AD%A3%E5%88%99%E5%8C%96%E4%B8%BA%E4%BE%8B"><span class="nav-number">2.3.</span> <span class="nav-text">11.2.3 嵌入式选择——以L1正则化为例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#11-3-%E7%A8%80%E7%96%8F%E8%A1%A8%E7%A4%BA%E4%B8%8E%E5%AD%97%E5%85%B8%E5%AD%A6%E4%B9%A0"><span class="nav-number">3.</span> <span class="nav-text">11.3 稀疏表示与字典学习</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#11-4-%E5%8E%8B%E7%BC%A9%E6%84%9F%E7%9F%A5"><span class="nav-number">4.</span> <span class="nav-text">11.4 压缩感知</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="nashswift"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">nashswift</p>
+  <div class="site-description" itemprop="description">What matters is not your ability, but your choice.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2023-06 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">nashswift</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共20.9k字</span>
+</div>
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
