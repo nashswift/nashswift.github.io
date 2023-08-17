@@ -192,6 +192,277 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/08/14/%E3%80%8APRML%E3%80%8Bch1-introduction/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="nashswift">
+      <meta itemprop="description" content="What matters is not your ability, but your choice.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="长野原烟花店">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/08/14/%E3%80%8APRML%E3%80%8Bch1-introduction/" class="post-title-link" itemprop="url">《PRML》ch1_introduction</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-08-14 22:50:28" itemprop="dateCreated datePublished" datetime="2023-08-14T22:50:28+08:00">2023-08-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-08-17 14:51:11" itemprop="dateModified" datetime="2023-08-17T14:51:11+08:00">2023-08-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ML-study/" itemprop="url" rel="index"><span itemprop="name">ML study</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="1-1-Example-Polynomial-Curve-Fitting"><a href="#1-1-Example-Polynomial-Curve-Fitting" class="headerlink" title="1.1. Example: Polynomial Curve Fitting"></a>1.1. Example: Polynomial Curve Fitting</h1><p><img src="/2023/08/14/%E3%80%8APRML%E3%80%8Bch1-introduction/多项式拟合.png" alt="多项式拟合"></p>
+<blockquote>
+<p><strong>建模过程</strong>（符合一般数据的生成过程：随机函数+随机噪声）：</p>
+<p>Step1: 从[0, 1]区间上等间距采样，得到输入x对应的标签t</p>
+<p>Step2: 加上一个高斯噪声——由随机过程/数据本身缺失引起</p>
+</blockquote>
+<h3 id="Model"><a href="#Model" class="headerlink" title="Model"></a>Model</h3><p><strong>使用linear model进行多项式拟合</strong>，形式为M阶多项式：</p>
+<script type="math/tex; mode=display">
+y(x, w) = w_0+w_1x+w_2x^2+...+w_Mx^M = \sum_{j=0}^Mw_jx^j</script><p><strong>Notes：</strong>尽管model关于x是non-linear的，但是关于w是linear的，因此称为linear model</p>
+<h3 id="Lost-function"><a href="#Lost-function" class="headerlink" title="Lost function"></a>Lost function</h3><p>采用<strong>均方误差SSE</strong>刻画损失：<script type="math/tex">E(w)=\frac{1}{2}\sum_{n=1}^N\{y(x_n,w)-t_n\}^2</script></p>
+<p><strong>Notes：</strong></p>
+<ol>
+<li>当且仅当预测正确（函数图像通过样本点）时，损失为0，否则大于0</li>
+<li>1/2仅仅是为了求导方便</li>
+</ol>
+<h3 id="Model-comparison-Model-selection"><a href="#Model-comparison-Model-selection" class="headerlink" title="Model comparison / Model selection"></a>Model comparison / Model selection</h3><p><strong>选择多项式的阶M</strong>的问题称为model comparison / model selection。</p>
+<p><img src="/2023/08/14/%E3%80%8APRML%E3%80%8Bch1-introduction/模型选择.png" alt="模型选择"></p>
+<p>可以观察到当M取值较大时，容易引发over-fitting，模型会更加迎合那些random noise；当M取值较小时，容易引发under-fitting，模型拟合能力较差。</p>
+<h3 id="Regularization"><a href="#Regularization" class="headerlink" title="Regularization"></a>Regularization</h3><p>由于通过<strong>增加样本数</strong>的方法缓解过拟合开销过大，因此引入<strong>regularization</strong>来限制模型的复杂度（控制error和penalty之间的权重），若使用L2 penalty：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+\tilde{E}(w)=\frac{1}{2}\sum_{n=1}^{N}\{y(x_n,w)-t_n\}^2+\frac{\lambda}{2}\lVert w\rVert^2 \\
+where\quad\lVert w\rVert^2=w^Tw=w_0^2+w_1^2+...+w_M^2
+\end{split}</script><p>其中，<script type="math/tex">\lambda</script>称为正则系数，用来控制正则化影响大小（SSE和regularization之间的重要性）的。实际中，通常从training set中分离出一部分称为validation set，用于训练超参<script type="math/tex">(M,\lambda)</script>，但某种程度上是对training set的一种浪费，因此引入后续的贝叶斯统计理论。</p>
+<h1 id="1-2-Probability-Theory"><a href="#1-2-Probability-Theory" class="headerlink" title="1.2. Probability Theory"></a>1.2. Probability Theory</h1><h3 id="The-Rules-of-Probability"><a href="#The-Rules-of-Probability" class="headerlink" title="The Rules of Probability"></a>The Rules of Probability</h3><p><strong>离散形式：</strong></p>
+<ol>
+<li>sum rule: <script type="math/tex">p(X)=\sum_Yp(X,Y)</script></li>
+<li>product rule: <script type="math/tex">p(X,Y)=p(Y|X)p(X)</script></li>
+</ol>
+<p><strong>Notes：</strong>若<script type="math/tex">p(X,Y)=p(X)p(Y)</script>，即<script type="math/tex">p(Y|X)=p(Y)</script>，则称X和Y是<strong>independent</strong></p>
+<p><strong>连续形式：</strong></p>
+<ol>
+<li>sum rule: <script type="math/tex">p(x)=\int p(x, y)dy</script></li>
+<li>product rule: <script type="math/tex">p(x,y)=p(y|x)p(x)</script></li>
+</ol>
+<h3 id="Bayes’s-theorem"><a href="#Bayes’s-theorem" class="headerlink" title="Bayes’s theorem"></a>Bayes’s theorem</h3><script type="math/tex; mode=display">
+p(Y|X)=\frac{p(X|Y)p(Y)}{p(X)}</script><p>其中，<script type="math/tex">p(X|Y)</script>称为likelihood，<script type="math/tex">p(Y)</script>称为prior probability，<script type="math/tex">p(Y|X)</script>称为posterior probability，由于分母部分<script type="math/tex">p(X)=\sum_Yp(X|Y)p(Y)</script>，因此称为normalization（确保概率归一化后和为1）</p>
+<blockquote>
+<p>prior probablity是指在没有对X（样本数据）观测时，对Y发生概率的估计，posterior probability 可以视作在观测到X后对prior probability的一种修正。</p>
+</blockquote>
+<h2 id="1-2-1-Probability-densities"><a href="#1-2-1-Probability-densities" class="headerlink" title="1.2.1 Probability densities"></a>1.2.1 Probability densities</h2><h3 id="Probability-density-function-PDF"><a href="#Probability-density-function-PDF" class="headerlink" title="Probability density function(PDF)"></a>Probability density function(PDF)</h3><script type="math/tex; mode=display">
+p(x\in(a,b))=\int_a^bp(x)dx</script><p>而probability density p(x)必须满足两个条件：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+p(x)\geq0 \\
+\int_a^bp(x)dx=1
+\end{split}</script><h3 id="Cummulative-distribution-function-CDF"><a href="#Cummulative-distribution-function-CDF" class="headerlink" title="Cummulative distribution function(CDF)"></a>Cummulative distribution function(CDF)</h3><script type="math/tex; mode=display">
+P(z)=\int_{-\infty}^zp(x)dx</script><p>且满足<script type="math/tex">P'(x)=p(x)</script></p>
+<h3 id="Non-linear-change-of-variable（-）"><a href="#Non-linear-change-of-variable（-）" class="headerlink" title="Non-linear change of variable（*）"></a>Non-linear change of variable（*）</h3><p><strong>Notes: </strong>under a nonlinear change of variable, a probability density transforms differently from a simple function, due to the Jacobian factor.</p>
+<p>假设随机变量x和y之间存在非线性变换<script type="math/tex">x=g(y)</script>，则x和y的PDF之间存在对应关系：</p>
+<script type="math/tex; mode=display">
+p_y(y)=p_x(x)\Big\lvert\frac{dx}{dy}\Big\rvert=p_x(g(y))\lvert g'(y)\rvert</script><blockquote>
+<p>另一个角度理解：</p>
+<p>变量x和y的非线性变换实际上是在CDF上进行的，而由于CDF转为PDF的过程中存在求导，因此上式可视作求导过程的chain rule</p>
+</blockquote>
+<h2 id="1-2-2-Expectations-and-covariance"><a href="#1-2-2-Expectations-and-covariance" class="headerlink" title="1.2.2 Expectations and covariance"></a>1.2.2 Expectations and covariance</h2><h3 id="Expectation"><a href="#Expectation" class="headerlink" title="Expectation"></a>Expectation</h3><p><strong>Def: </strong>the average value of some function f(x) under a probability distribution p(x) is called the <em>expectation</em> of f(x) and will be denoted by E[f].</p>
+<p><strong>离散形式：</strong><script type="math/tex">E[f]=\sum_xp(x)f(x)</script></p>
+<p><strong>连续形式：</strong><script type="math/tex">E[f]=\int p(x)f(x)dx</script></p>
+<p>对于概率分布中有给定的有限数量的N个点，由<script type="math/tex">E[f]\simeq\frac{1}{N}\sum_{n=1}^{N}f(x_n)</script>可得，当<script type="math/tex">N\rightarrow\infty</script>时取等，故可以通过采样的方式来估计期望。</p>
+<p><strong>Conditional expectation: </strong><script type="math/tex">E_x[f|y]=\sum_xp(x|y)f(x)</script></p>
+<h3 id="Variance"><a href="#Variance" class="headerlink" title="Variance"></a>Variance</h3><p><strong>Def: </strong>the <em>variance</em> of f(x) provides a measure of how much variability there is in f(x) around its mean value E[f(x)].</p>
+<script type="math/tex; mode=display">
+var[f(x)]=E[f(x)^2]-E[f(x)]^2</script><p><strong>Covariance: </strong>express the extent to which x and y vary together. If x and y are <strong>independent</strong>, then their covariance vanishes.</p>
+<script type="math/tex; mode=display">
+cov[x, y]=E_{x,y}[xy]-E[x]E[y]</script><h2 id="1-2-3-Bayesian-probabilities"><a href="#1-2-3-Bayesian-probabilities" class="headerlink" title="1.2.3 Bayesian probabilities"></a>1.2.3 Bayesian probabilities</h2><p><strong>统计学派视角：</strong>概率是通过无限可重复的、随机的事件发生频率来刻画的</p>
+<p><strong>贝叶斯学派视角：</strong>概率提供了不确定性的定量描述</p>
+<p>在观测数据D前，给定模型参数w的prior记作p(w)，而数据观测所带来的影响由likelihood表示，记作p(D|w)，根据Bayesian Theorem：</p>
+<script type="math/tex; mode=display">
+p(w|D)=\frac{p(D|w)p(w)}{p(D)}</script><p>可得出在观测数据下w的posterior——p(w|D)来刻画w的不确定性，其中p(D)为归一化因子：<script type="math/tex">p(D)=\int p(D|w)p(w)dw</script>。</p>
+<p>Bayesian theorem也可以表示为：<script type="math/tex">posterior\propto likelihood \times prior</script></p>
+<blockquote>
+<p>频率派和贝叶斯派都认为likelihood function具有十分重要的地位：</p>
+<ol>
+<li>对于频率派而言，认为w是固定的参数而误差来源于观察数据分布和真实数据分布之间的差异，最小化误差函数就等价于MLE，故常使用MLE方法找到能使得likelihood最大的参数w作为模型参数。</li>
+<li>对于贝叶斯派而言，认为w由某种概率分布所表达——即先验p(w)，在给定先验p(w)条件下利用Bayesian theorem将MLE转为MAP</li>
+</ol>
+</blockquote>
+<h2 id="1-2-4-The-Gaussian-distribution"><a href="#1-2-4-The-Gaussian-distribution" class="headerlink" title="1.2.4 The Gaussian distribution"></a>1.2.4 The Gaussian distribution</h2><p><strong>一元高斯分布</strong>：</p>
+<script type="math/tex; mode=display">
+N(x|\mu,\sigma^2)=\frac{1}{(2\pi\sigma^2)^{1/2}}\exp\bigg\{-\frac{1}{2\sigma^2}(x-\mu)^2\bigg\}</script><p><strong>Notes: </strong><script type="math/tex">\mu</script>称为mean，<script type="math/tex">\sigma^2</script>称为variance，<script type="math/tex">\sigma</script>称为standard deviation，<script type="math/tex">\beta=1/\sigma^2</script>称为precision</p>
+<p><strong>多元高斯分布（D维）：</strong></p>
+<script type="math/tex; mode=display">
+N(x|\mu,\Sigma)=\frac{1}{(2\pi)^{D/2}}\frac{1}{\lvert\Sigma\rvert^{D/2}}\exp\bigg\{-\frac{1}{2}(x-\mu)^T\Sigma^{-1}(x-\mu)\bigg\}</script><p><strong>Notes: </strong><script type="math/tex">\Sigma\in R^{D\times D}</script>称为covariance matrix</p>
+<h3 id="MLE-for-Gaussian-distribution"><a href="#MLE-for-Gaussian-distribution" class="headerlink" title="MLE for Gaussian distribution"></a>MLE for Gaussian distribution</h3><p>假设N个观测数据<script type="math/tex">x=(x_1,x_2,...,x_N)^T</script>都是独立从Gaussian distribution中抽样出来的（aka: i.i.d.），则数据的likelihood function可以表示为</p>
+<script type="math/tex; mode=display">
+p(x|\mu,\sigma^2)=\prod_{n=1}^{N}N(x_n|\mu,\sigma^2)</script><p>通过MLE求参数<script type="math/tex">\mu</script>和<script type="math/tex">\sigma^2</script>得</p>
+<script type="math/tex; mode=display">
+\begin{split}
+\mu_{ML}=\frac{1}{N}\sum_{n=1}^{N}x_n \\
+\sigma_{ML}^2=\frac{1}{N}\sum_{n=1}^{N}(x_n-\mu_{ML})^2
+\end{split}</script><p>其中对参数<script type="math/tex">\mu</script>的估计是无偏的，但对参数<script type="math/tex">\sigma^2</script>的估计是有偏的（<script type="math/tex">\tilde{\sigma}^2=\frac{N}{N-1}\sigma_{ML}^2</script>），由此可见MLE方法极易导致over-fitting的出现。但当数据量足够大，即<script type="math/tex">N\rightarrow\infty</script>时，<script type="math/tex">\tilde\sigma^2=\sigma_{ML}^2</script>消除了偏差，over-fitting自然也消除了（再次论证了增加数据量能一定程度上消除over-fitting这一结论）。</p>
+<h2 id="1-2-5-Curve-fitting-re-visited"><a href="#1-2-5-Curve-fitting-re-visited" class="headerlink" title="1.2.5 Curve fitting re-visited"></a>1.2.5 Curve fitting re-visited</h2><p><strong>Assumption: </strong>给定x，所对应的标签t服从Gaussian distribution且均值为y(x, w)——即分布均值落在拟合曲线上，故likelihood function为</p>
+<script type="math/tex; mode=display">
+p(t|x,w,\beta)=\prod_{n=1}^{N}N(t_n|y(x_n,w),\beta^{-1})</script><p><img src="/2023/08/14/%E3%80%8APRML%E3%80%8Bch1-introduction/curve fitting re-visited.png" alt="curve fitting re-visited"></p>
+<p>利用MLE求解参数w和<script type="math/tex">\beta</script>的过程等价于最小化SSE损失，可以得到<script type="math/tex">\frac{1}{\beta_{ML}}=\frac{1}{N}\sum_{n=1}^{N}\{y(x_n,w_{ML})-t_n\}^2</script>。</p>
+<p><strong>进一步使用贝叶斯方法</strong>，引入超参数<script type="math/tex">\alpha</script>（precision）控制参数w的先验分布</p>
+<script type="math/tex; mode=display">
+p(w|\alpha)=N(w|0,\alpha^{-1}I)=\bigg(\frac{\alpha}{2\pi}\bigg)^{(M+1)/2}\exp\bigg\{-\frac{\alpha}{2}w^Tw\bigg\}</script><p>其中M+1表示M阶多项式有M+1个参数，利用贝叶斯公式<script type="math/tex">p(w|x,t,\alpha,\beta)\propto p(t|x,w,\beta)p(w|\alpha)</script>可将MLE转为MAP，而又有</p>
+<script type="math/tex; mode=display">
+\max\:p(w|x,t,\alpha,\beta) \Leftrightarrow \min\:\frac{\beta}{2}\sum_{n=1}^N\{y(x_n,w)-t_n\}^2+\frac{\alpha}{2}w^Tw</script><p>故利用MAP求解参数w的过程等驾驭最小化带regularization的SSE损失（<script type="math/tex">\lambda=\alpha/\beta</script>）。</p>
+<h2 id="1-2-6-Bayesian-curve-fitting"><a href="#1-2-6-Bayesian-curve-fitting" class="headerlink" title="1.2.6 Bayesian curve fitting"></a>1.2.6 Bayesian curve fitting</h2><p><strong>Assumption: </strong>参数<script type="math/tex">\alpha</script>和<script type="math/tex">\beta</script>已知。</p>
+<p>给定训练数据(X, T)进行模型训练，对于一个新数据点x给出其标签t的预测分布p(t|x, X, T)为<script type="math/tex">p(t|x,X,T)=\int p(t|x,w)p(w|X,T)dw</script>，其结果为</p>
+<script type="math/tex; mode=display">
+\begin{split}
+p(t|x,X,T)=N(t|m(x),s^2(x)) \\
+m(x)=\beta\phi(x)^TS\sum_{n=1}^N\phi(x_n)t_n \\
+s^2(x)=\beta^{-1}+\phi(x)^TS\phi(x) \\
+S^{-1}=\alpha I+\beta\sum_{n=1}^N\phi(x_n)\phi(x)^T
+\end{split}</script><p>其中，vector <script type="math/tex">\phi_i(x)=x^i\:for\:i=0,...,M</script></p>
+<blockquote>
+<p>可以视作两个高斯分布的卷积，结果一定为高斯分布。</p>
+</blockquote>
+<h1 id="1-3-Model-Selection"><a href="#1-3-Model-Selection" class="headerlink" title="1.3. Model Selection"></a>1.3. Model Selection</h1><h3 id="S-fold-cross-validation（避免使用validation-set）"><a href="#S-fold-cross-validation（避免使用validation-set）" class="headerlink" title="S-fold cross-validation（避免使用validation set）"></a>S-fold cross-validation（避免使用validation set）</h3><p><strong>Def: </strong>首先将数据分为S份，每次选择S-1份用来train，剩下1份用来evaluation，如此重复S次，最终模型的performance就是这S个evaluation的平均。</p>
+<p><img src="/2023/08/14/%E3%80%8APRML%E3%80%8Bch1-introduction/cross-validation.png" alt="cross-validation"></p>
+<blockquote>
+<p>当S=N时也称作leave-one-out technique。</p>
+</blockquote>
+<p><strong>Prob: </strong></p>
+<ol>
+<li>the number of training runs that must be performed is increased by a factor of S</li>
+<li>we might have multiple complexity params for a single model</li>
+</ol>
+<h1 id="1-4-The-Curse-of-Dimensionality"><a href="#1-4-The-Curse-of-Dimensionality" class="headerlink" title="1.4. The Curse of Dimensionality"></a>1.4. The Curse of Dimensionality</h1><p>Part1: 维数增长会带来运算量激增等困境</p>
+<p>Part2: 低维空间中的某些intuitions在高维度空间中不适用</p>
+<p>但在实际运用中，实际目标常常受限于低维空间当中，且局部光滑无突变，故并不影响我们在高维度空间中寻找有效算法。</p>
+<h1 id="1-5-Decision-Theory"><a href="#1-5-Decision-Theory" class="headerlink" title="1.5. Decision Theory"></a>1.5. Decision Theory</h1><p>由Bayesian theorem可得，新数据x被划分到类别<script type="math/tex">C_k</script>的概率为</p>
+<script type="math/tex; mode=display">
+p(C_k|x)=\frac{p(x|C_k)p(C_k)}{p(x)}</script><p>我们的目的是最小化分类错误的概率，那么intuitively我们应该选择后验概率更大的那类。</p>
+<h2 id="1-5-1-Minimizing-the-misclassification-rate"><a href="#1-5-1-Minimizing-the-misclassification-rate" class="headerlink" title="1.5.1 Minimizing the misclassification rate"></a>1.5.1 Minimizing the misclassification rate</h2><p><strong>Aim: </strong>划分出合适的decision regions <script type="math/tex">R_k</script></p>
+<ol>
+<li>最小化误分类率——以二分类为例</li>
+</ol>
+<script type="math/tex; mode=display">
+p(mistake)=p(x\in R_1,C_2)+p(x\in R_2,C_1)=\int_{R_1}p(x,C_2)dx+\int_{R_2}p(x,C_1)dx</script><ol>
+<li>最大化正确分类率——以多分类为例</li>
+</ol>
+<script type="math/tex; mode=display">
+p(correct)=\sum_{k=1}^Kp(x\in R_k,C_k)=\sum_{k=1}^{K}\int_{R_k}p(x,C_k)dx</script><p><strong>Summary: </strong>for each new x, we can choose the category <script type="math/tex">C_k</script> which can maximize <script type="math/tex">P(C_k|x)</script></p>
+<h2 id="1-5-2-Minimizing-the-expected-loss"><a href="#1-5-2-Minimizing-the-expected-loss" class="headerlink" title="1.5.2 Minimizing the expected loss"></a>1.5.2 Minimizing the expected loss</h2><p><img src="/2023/08/14/%E3%80%8APRML%E3%80%8Bch1-introduction/loss matrix.png" alt="loss matrix"></p>
+<p>使用一个<strong>loss matrix</strong>来刻画误分类的cost，则loss function可以表示为</p>
+<script type="math/tex; mode=display">
+E[L]=\sum_k\sum_j\int_{R_j}L_{kj}p(x,C_k)dx</script><p>其中<script type="math/tex">L_{kj}</script>表示将原本属于<script type="math/tex">C_k</script>类的样本点误分类到<script type="math/tex">C_j</script>类所带来的损失。</p>
+<p><strong>Summary: </strong>for each new x, we can choose the category <script type="math/tex">C_j</script> which can minimize <script type="math/tex">\sum_kL_{kj}p(C_k|x)</script></p>
+<h2 id="1-5-3-The-reject-option"><a href="#1-5-3-The-reject-option" class="headerlink" title="1.5.3 The reject option"></a>1.5.3 The reject option</h2><p>面对分类问题，当最大的posterior仍然远小于1时，或者是有两个或多个posterior相近时，按照MAP原则往往会产生很多分类错误。因此可以设置一个<strong>threshold <script type="math/tex">\theta</script>（拒绝域）</strong>，拒绝对那些最大posterior仍小于或等于<script type="math/tex">\theta</script>的分类做出决策，而转交给human expert来完成。</p>
+<h2 id="1-5-4-Inference-and-decision"><a href="#1-5-4-Inference-and-decision" class="headerlink" title="1.5.4 Inference and decision"></a>1.5.4 Inference and decision</h2><p><strong>将分类问题分为两步：</strong></p>
+<ol>
+<li><strong>Inference stage</strong>: use training data to learn a model for <script type="math/tex">P(C_k|x)</script></li>
+<li><strong>Decision stage</strong>: use these posterior probabilities to make optimal calss assignments</li>
+</ol>
+<p><strong>三种解决分类问题的手段：</strong></p>
+<p>（a）<strong>Generative model（生成式模型）：</strong>model the joint distribution <script type="math/tex">P(x,C_k)</script> and (nomalize the joint distribution) obtain the posterior: <script type="math/tex">p(C_k|x)=\frac{p(x|C_k)p(C_k)}{p(x)}</script></p>
+<p><strong>Notes: </strong>1. most demanding  2. can do the outlier detection task</p>
+<p>（b）<strong>Discriminative model（判别式模型）：</strong>directly calculate the posterior <script type="math/tex">p(C_k|x)</script></p>
+<p><strong>Notes: </strong>the best choice when doing the classification work</p>
+<p>（c）<strong>Discriminant function（判别函数）：</strong>find f(x) which maps x onto a class label</p>
+<p><strong>Notes: </strong>1. combine the inference and decision stages into a single step 2. without posterior, which is hard to apply to some complex tasks</p>
+<blockquote>
+<p>There are many powerful reasons for wanting to compute the posterior probabilities:</p>
+<ol>
+<li>MInimizing task</li>
+<li>Reject option</li>
+<li>Compensating for class priors</li>
+<li>Combining models</li>
+</ol>
+</blockquote>
+<h2 id="1-5-5-Loss-functions-for-regression"><a href="#1-5-5-Loss-functions-for-regression" class="headerlink" title="1.5.5 Loss functions for regression"></a>1.5.5 Loss functions for regression</h2><p>考虑回归问题，对于每个输入样本点x有模型输出y(x)和与之对应的标签t，引入期望损失并用squared loss作为损失函数：</p>
+<script type="math/tex; mode=display">
+E[L]=\iint\{y(x)-t\}^2p(x,t)dxdt</script><p><strong>Aim: </strong>find a y(x) which can minimize E[L]</p>
+<p>将损失函数E[L]进行拆分得到：<script type="math/tex">E[L]=\int\{y(x)-E[t|x]\}^2p(x)dx+\int\{E[t|x]-t\}^2p(x)dx</script>，由此可知实际上第一项是我们的优化目标，而第二项与y(x)无关，可以视作noise。</p>
+<p>故解得最优解<script type="math/tex">y(x)=E_t[t|x]</script>，y(x)也被称为regression function。</p>
+<p><strong>三种解决回归问题的手段：（和分类问题类似）</strong></p>
+<p>（a）Generative model</p>
+<p>（b）Discriminative model</p>
+<p>（c）Discriminant function</p>
+<h1 id="1-6-Information-Theory"><a href="#1-6-Information-Theory" class="headerlink" title="1.6. Information Theory"></a>1.6. Information Theory</h1><h3 id="信息量h-x"><a href="#信息量h-x" class="headerlink" title="信息量h(x)"></a>信息量h(x)</h3><p>“degree of surprise”，关于事件x发生的概率呈负相关，最终给出的定义为<script type="math/tex">h(x)=-log_2p(x)</script></p>
+<h3 id="熵"><a href="#熵" class="headerlink" title="熵"></a>熵</h3><p>对随机变量x的信息量求期望，得到的是entropy：<script type="math/tex">H[x]=-\sum_xp(x)log_2p(x)</script>。特别地，当p(x)=0时，H[x]=0。</p>
+<blockquote>
+<p>对于离散型随机变量而言，当p(x)为均匀分布时熵最大，此时H=lnM where M is the total number of states <script type="math/tex">x_i</script></p>
+</blockquote>
+<h3 id="微分熵"><a href="#微分熵" class="headerlink" title="微分熵"></a>微分熵</h3><p>Diffrential entropy表示具体化一个连续的随机变量需要多少bit：<script type="math/tex">H[x]=-\int p(x)lnp(x)dx</script></p>
+<blockquote>
+<p>对于连续型随机变量而言，当p(x)为高斯分布时熵最大，此时<script type="math/tex">H[x]=\frac{1}{2}\{1+ln(2\pi\sigma^2)\}</script></p>
+</blockquote>
+<h3 id="条件熵"><a href="#条件熵" class="headerlink" title="条件熵"></a>条件熵</h3><p>Conditional entropy是指假定联合分布p(x,y)和x已知，想要确定y还需要的额外信息量为H[y|x]，定义为<script type="math/tex">H[y|x]=-\iint p(y,x)ln(y|x)dydx</script>，且满足<script type="math/tex">H[x,y]=H[y|x]+H[x]</script></p>
+<h2 id="1-6-1-Relative-entropy-and-mutual-information"><a href="#1-6-1-Relative-entropy-and-mutual-information" class="headerlink" title="1.6.1 Relative entropy and mutual information"></a>1.6.1 Relative entropy and mutual information</h2><h3 id="Relative-entropy"><a href="#Relative-entropy" class="headerlink" title="Relative entropy"></a>Relative entropy</h3><p><strong>Aim: </strong>对于未知的p(x)，使用已知q(x)进行近似</p>
+<p>使用p(x)和q(x)的平均信息编码长度之差来衡量二者之间的差异（用已知p(x)希望得到目标q(x)所需要的额外信息量），即<strong>relative entropy或KL divergence</strong>：</p>
+<script type="math/tex; mode=display">
+KL(p\lVert q)=-\int p(x)ln\Big\{\frac{q(x)}{p(x)}\Big\}dx</script><p>The KL divergence satisfies <script type="math/tex">KL(p||q)\geq0</script> with equality if, and only if, p(x)=q(x)</p>
+<p>由于KL散度的计算设计繁琐的积分运算，因此考虑KL散度的近似计算方法：</p>
+<script type="math/tex; mode=display">
+KL(p\lVert q)\simeq \sum_{n=1}^{N}\{-lnq(x_n|\theta)+lnp(x_n)\}</script><p>其中只有第一项受到adjustable params <script type="math/tex">\theta</script>的影响，因此最小化KL散度等等价于MLE。</p>
+<h3 id="Mutual-information"><a href="#Mutual-information" class="headerlink" title="Mutual information"></a>Mutual information</h3><p><strong>Aim: </strong>衡量两个不独立的变量x、y之间的“接近”程度</p>
+<p><strong>Mutual information（互信息）</strong> 表示一个新观测到的y造成x不确定性减小的程度，定义为：</p>
+<script type="math/tex; mode=display">
+I[x,y]=-\iint p(x,y)ln\Big(\frac{p(x)p(y)}{p(x,y)}\Big)dxdy</script><script type="math/tex; mode=display">I[x,y]\geq0$$ with equality if, and only if, x and y are independent
+
+**Relative entropy 和 mutual information 之间的联系：**$$I[x,y]=H[x]-H[x|y]=H[y]-H[y|x]</script>
+      
+    </div>
+
+    
+    
+    
+
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2023/06/16/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E5%8D%81%E4%B8%80%E7%AB%A0-%E7%89%B9%E5%BE%81%E9%80%89%E6%8B%A9%E4%B8%8E%E7%A8%80%E7%96%8F%E5%AD%A6%E4%B9%A0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2030,273 +2301,6 @@ S_t=S_b+S_w=\sum_{i=1}^m{(x_i-\mu)(x_i-\mu)^T}</script><p>显然，多分类LDA�
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2023/06/05/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0%E4%B8%8E%E9%80%89%E6%8B%A9/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="nashswift">
-      <meta itemprop="description" content="What matters is not your ability, but your choice.">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="长野原烟花店">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/06/05/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0%E4%B8%8E%E9%80%89%E6%8B%A9/" class="post-title-link" itemprop="url">周志华《机器学习》（AKA：西瓜书）笔记整理-第二章-模型评估与选择</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2023-06-05 13:09:22" itemprop="dateCreated datePublished" datetime="2023-06-05T13:09:22+08:00">2023-06-05</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-06-09 11:22:03" itemprop="dateModified" datetime="2023-06-09T11:22:03+08:00">2023-06-09</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/ML-study/" itemprop="url" rel="index"><span itemprop="name">ML study</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="2-1-经验误差与过拟合"><a href="#2-1-经验误差与过拟合" class="headerlink" title="2.1 经验误差与过拟合"></a>2.1 经验误差与过拟合</h1><p><strong>错误率（error rate）</strong>：分类错误的样本数占样本总数的比例。如果在m个样本中有a个样本分类错误，则错误率为$E = \frac{a}{m}$ 。</p>
-<p><strong>精度（accuracy）</strong>：精度=1-错误率。<br><strong>误差（error）</strong>：学习器的实际预测输出与样本的真实输出之间的差异。<br><strong>训练误差（training error）/经验误差（empirical error）</strong>：学习器在训练集上的误差。<br><strong>泛化误差（generalization error）</strong>：学习器在新样本上的误差（我们希望得到泛化误差小的学习器）。</p>
-<p><strong>过拟合</strong>：在训练集上表现很好，但在测试集上表现不好（学习能力太强，不可避免，只能缓解）。<br><strong>欠拟合</strong>：在训练集和测试集上表现都不好（学习能力太弱，加大学习）。</p>
-<blockquote>
-<p>解决过拟合的方法：</p>
-<p>​    1.降低参数空间的维度（如剪枝、权重共享等）<br>​    2.降低每个参数维度上的有效规模（如正则化、早停法、训练更多数据等）</p>
-<p>解决欠拟合的方法：</p>
-<p>​    1.增加新的特征或多项式特征<br>​    2.使用非线性模型等更复杂的模型<br>​    3.使用集成学习方法，如Bagging等</p>
-</blockquote>
-<p><strong>补充</strong>：</p>
-<p>P类问题（Polynominal problem）：存在多项式时间算法问题。</p>
-<p>NP类问题（Nondeterministic Polynominal-hard problem）：能在多项式时间内验证得出一个正确的解。</p>
-<p>NP难问题（NP-hard problem）：无法得到多项式级的算法。</p>
-<h1 id="2-2-评估方法"><a href="#2-2-评估方法" class="headerlink" title="2.2 评估方法"></a>2.2 评估方法</h1><p><strong>测试集（testing set）</strong>：来测试学习器对新样本的判别能力。</p>
-<ul>
-<li>从样本真实分布中独立同分布（iid）采样而得</li>
-<li>尽可能与训练集互斥</li>
-</ul>
-<p><strong>测试误差（testing error）</strong>：作为泛化误差的近似。</p>
-<h2 id="2-2-1-留出法（hold-out）"><a href="#2-2-1-留出法（hold-out）" class="headerlink" title="2.2.1 留出法（hold-out）"></a>2.2.1 留出法（hold-out）</h2><p>直接将数据集D划分为两个互斥的集合，其中一个集合作为训练集S（$70\%-80\% $），另一个作为测试集T（$20\%-30\%$）。</p>
-<blockquote>
-<p>以二分类任务为例子，假定D中有1000个样本，划分后S包含700个样本T包含300个样本，用S进行训练之后，若模型在T上有90个样本分类错误，那么错误率为$(90/300)\times100\% = 30\%$，相应的精度为$1-30\%= 70\%$。</p>
-</blockquote>
-<p><strong>注意</strong>：单次使用留出法时得到的估计结果往往不够稳定可靠，因此一般要采用若干次随机划分、重复进行实验评估后取平均值作为留出法的评估结果。</p>
-<h2 id="2-2-2-交叉验证法（cross-validation）"><a href="#2-2-2-交叉验证法（cross-validation）" class="headerlink" title="2.2.2 交叉验证法（cross validation）"></a>2.2.2 交叉验证法（cross validation）</h2><p>将数据集D划分为k个大小相似的互斥子集，每个子集都从D中通过分层残阳得到（尽可能保持数据分布一致性），然后每次用k-1个子集的并集作为训练集，余下的那个子集作为测试集，最终返回的是k个测试结果的均值。</p>
-<ul>
-<li><p><strong>k折交叉验证（k-fold cross validation）</strong>：k最常用的取值是10，此外还常用的有5、20等。</p>
-<p><img src="/2023/06/05/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0%E4%B8%8E%E9%80%89%E6%8B%A9/10折交叉验证示意图.png" alt="10折交叉验证示意图"></p>
-<center>10折交叉验证示意图</center>
-
-<p>为减少因样本划分不同而引入的差别，k折交叉验证通常要随机使用不同的划分重复p次，最终评估结果是折p次k折交叉验证结果的均值。</p>
-</li>
-<li><p><strong>留一法（Leave-One-Out，简称LOO）</strong>：k=m，m为样本个数，数据集较大时不推荐使用。</p>
-</li>
-</ul>
-<h2 id="2-2-3-自助法（bootstrapping）"><a href="#2-2-3-自助法（bootstrapping）" class="headerlink" title="2.2.3 自助法（bootstrapping）"></a>2.2.3 自助法（bootstrapping）</h2><p>直接以自助手采样（bootstrap sampling）为基础。在包含m个样本的数据集D中<strong>有放回</strong>地采样m次得到数据集D’，初始数据集D中约有36.8%的样本未出现在采样数据集D’中，于是我们把D’作为训练集，D\D‘作为测试集。这样，我们仍有数据总量约1/3的、没在训练集中出现的样本用于测试，这样的测试结果也叫做<strong>“包外估计”（out-of-bag estimate）</strong>。</p>
-<p><strong>缺点</strong>：自助法产生的数据集改变了初始数据集的分布，会引入估计偏差。</p>
-<h2 id="2-2-4-调参与最终模型"><a href="#2-2-4-调参与最终模型" class="headerlink" title="2.2.4 调参与最终模型"></a>2.2.4 调参与最终模型</h2><p><strong>调参（paraemeter tuning）</strong>：对算法的参数进行设定。</p>
-<p><strong>验证集（validation set）</strong>：将训练数据另外划分为训练集和验证集，基于验证集上的性能进行模型参数选择和调参。</p>
-<h1 id="2-3-性能度量"><a href="#2-3-性能度量" class="headerlink" title="2.3 性能度量"></a>2.3 性能度量</h1><p><strong>性能度量（performance measure）</strong>：衡量模型泛化能力的评价标准（相对的）。</p>
-<p>常用的性能度量——<strong>均方误差（mean squared error）</strong>:</p>
-<ul>
-<li><p>离散：</p>
-<script type="math/tex; mode=display">
-E(f;D) = \frac{1}{m}\sum_{i=1}^{m}{(f(x_{i})-y_{i})^2}</script></li>
-<li><p>连续：</p>
-<script type="math/tex; mode=display">
-E(f;D)=\int_{x\sim D}{(f(x)-y)^2}p(x)dx</script></li>
-</ul>
-<h2 id="2-3-1-错误率与精度"><a href="#2-3-1-错误率与精度" class="headerlink" title="2.3.1 错误率与精度"></a>2.3.1 错误率与精度</h2><p><strong>错误率</strong>：分类错误的样本数占样本总数的比例。</p>
-<ul>
-<li><p>离散：</p>
-<script type="math/tex; mode=display">
-E(f;D)=\frac{1}{m}\sum_{i=1}^{m}{\amalg(f(x_i)\neq y_i)}</script></li>
-<li><p>连续：</p>
-<script type="math/tex; mode=display">
-E(f;D)=\int_{x\sim D}{\amalg(f(x)\neq y)p(x)dx}</script></li>
-</ul>
-<p><strong>精度</strong>：分类正确的样本数占样本总数的比例。</p>
-<ul>
-<li><p>离散：</p>
-<script type="math/tex; mode=display">
-acc(f;D)=\frac{1}{m}\sum_{i=1}^{m}{\amalg(f(x_i)=y_i)}=1-E(f;D)</script></li>
-<li><p>连续：</p>
-<script type="math/tex; mode=display">
-acc(f;D)=\int_{x\sim D}{\amalg(f(x)=y)p(x)dx}=1-E(f;D)</script></li>
-</ul>
-<h2 id="2-3-2-查准率、查全率与F1"><a href="#2-3-2-查准率、查全率与F1" class="headerlink" title="2.3.2 查准率、查全率与F1"></a>2.3.2 查准率、查全率与F1</h2><ul>
-<li><p><strong>真正例（true positive）</strong>：TP</p>
-</li>
-<li><p><strong>假正例（false positive）</strong>：FP</p>
-</li>
-<li><p><strong>真反例（true negative）</strong>：TN</p>
-</li>
-<li><p><strong>假反例（false negative）</strong>：FN</p>
-</li>
-</ul>
-<p><strong><em>注：TP + FP + TN + FN = 样例总数</em></strong></p>
-<p><img src="/2023/06/05/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0%E4%B8%8E%E9%80%89%E6%8B%A9/分类混淆矩阵.png" alt="分类混淆矩阵"></p>
-<p><strong>查准率（precision）</strong>：在所有预测的正例中真正例的比例（“所查有多准”）。</p>
-<script type="math/tex; mode=display">
-P = \frac{TP}{TP+FP}</script><p>注：分母TP+FP为预测为真的总数</p>
-<p><strong>查全率（recall）</strong>：所有的正例中有多少被查出来了（“所查有多全”）。</p>
-<script type="math/tex; mode=display">
-R = \frac{TP}{TP+FN}</script><p>注：分母TP+FN为实际为真的总数</p>
-<p><strong>P-R曲线</strong>：查准率和查全率是两个互斥的变量，查全率高时查准率往往偏低，查准率高时查全率往往偏低。</p>
-<p><img src="/2023/06/05/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0%E4%B8%8E%E9%80%89%E6%8B%A9/P-R曲线和平衡点示意图.png" alt="P-R曲线和平衡点示意图"></p>
-<p><strong>度量学习器优劣的方法：</strong></p>
-<ol>
-<li><p>直接法：若一个学习器的P-R曲线被另一个学习器的曲线完全“包住”，则可以断言后者的性能优于前者</p>
-</li>
-<li><p>面积法：比较两个学习器P-R曲线下面积的大小，面积大的曲线性能更好</p>
-</li>
-<li><p>平衡点法：平衡点（BEP）是“查准率=查全率”时的取值，平衡点更大者性能更好</p>
-</li>
-<li><p>F1度量：</p>
-<script type="math/tex; mode=display">
-F1 = \frac{2\times P\times R}{P+R}</script></li>
-<li><p>F1度量的更一般形式 ——<script type="math/tex">F_\beta</script>度量：</p>
-<script type="math/tex; mode=display">
-F_\beta=\frac{(1+\beta^2)\times P\times R}{(\beta^2\times P)+R}</script><p>注：<script type="math/tex">\beta=1</script>时退化为F1度量，<script type="math/tex">\beta>1</script>时查全率影响更大，<script type="math/tex">\beta<1</script>时查准率影响更大</p>
-</li>
-<li><p>宏查准率（macro-P）、宏查全率（macro-R）、宏F1（macro-F1）：先计算P、R、F1，再取平均</p>
-</li>
-<li><p>微查准率（micro-P）、微查全率（micro-R）、微F1（micro-F1）：先取平均，再计算P、R、F1</p>
-<p>注：方法6和方法7性能差别不大</p>
-</li>
-</ol>
-<h2 id="2-3-3-ROC和AUC"><a href="#2-3-3-ROC和AUC" class="headerlink" title="2.3.3 ROC和AUC"></a>2.3.3 ROC和AUC</h2><p>很多学习器是从测试样本产生一个实值或概率预测，然后将这个预测值与一个分类阈值（threshold）比较，若大于阈值则为正类，否则为反类。若更重视查准率，则可以选择排序中靠前的位置截断；若更重视查全率，则可以选择靠后的位置截断。因此，<strong>排序本身的质量好坏，体现了综合考虑学习器在不同任务下期望泛化性能的好坏</strong>。</p>
-<p><strong>ROC（受试者工作特征Receiver Operating Characteristic）曲线</strong>：</p>
-<p><img src="/2023/06/05/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0%E4%B8%8E%E9%80%89%E6%8B%A9/ROC曲线和AUC.png" alt="ROC曲线和AUC"></p>
-<blockquote>
-<p><strong>ROC曲线理解：</strong></p>
-<p>真正例率TPR：抓住坏人的比例</p>
-<p>假正例率FPR：误伤好人的比例</p>
-<p>1处：好人全放走，坏人全抓到（理想情况）</p>
-<p>2处：不论好人坏人全部抓</p>
-<p>3处：好人全抓了，坏人全放走（最差情况）</p>
-<p>4处：不论好人坏人全部放</p>
-<p><strong>因此ROC曲线越接近于点（0, 1）越好，越接近对角线（随机猜测）越差。</strong></p>
-</blockquote>
-<p><strong>AUC（Area Under ROC Curve）</strong>：ROC曲线下的面积（学习器比较的合理判据）。</p>
-<ul>
-<li><p>几何法：</p>
-<script type="math/tex; mode=display">
-AUC=\frac{1}{2}\sum_{i=1}^{m-1}{(x_{i+1}-x_i)(y_{i+1}+y_i)}</script></li>
-<li><p>损失法：</p>
-<script type="math/tex; mode=display">
-AUC = 1-l_{rank}</script><script type="math/tex; mode=display">
-l_{rank}=\frac{1}{m^+\times m^-}\sum_{x^+\in D^+}\sum_{x^-\in D^-}\Big(\amalg(f(x^+)<f(x^-))+\frac{1}{2}\amalg(f(x^+)=f(x^-))\Big)</script><p>注：<script type="math/tex">l_{rank}</script>是排序损失，对应ROC曲线之上的面积。考虑每一对正例和反例，若正例的预测值小于反例，则记1个“罚分”；若相等，则记0.5个“罚分”。</p>
-</li>
-</ul>
-<h2 id="2-3-4-代价敏感错误率与代价曲线"><a href="#2-3-4-代价敏感错误率与代价曲线" class="headerlink" title="2.3.4 代价敏感错误率与代价曲线"></a>2.3.4 代价敏感错误率与代价曲线</h2><p><strong>非均等代价（unequal cost）</strong>：把第i类的样本预测为第j类的代价和把第j类的样本预测为第i类的代价不相等（<script type="math/tex">cost_{ij}\neq cost_{ji}</script>）。</p>
-<p><img src="/2023/06/05/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0%E4%B8%8E%E9%80%89%E6%8B%A9/二分类代价矩阵.png" alt="二分类代价矩阵"></p>
-<p>注：<script type="math/tex">cost_{ii}=0</script>表示分类正确的代价为0</p>
-<p><strong>代价敏感错误率（cost-sesitive error rate）</strong>：</p>
-<ul>
-<li>离散：</li>
-</ul>
-<script type="math/tex; mode=display">
-E(f;D;cost)=\frac{1}{m}\Big(\sum_{x_i\in D^+}\amalg(f(x_i)\neq y_i)\times cost_{01}+\sum_{x_i\in D^-}\amalg(f(x_i)\neq y_i)\times cost_{10}\Big)</script><ul>
-<li>连续：</li>
-</ul>
-<script type="math/tex; mode=display">
-E(f;D;cost)=cost_{01}\int_{x\sim D^+}{\amalg(f(x)\neq y)p(x)dx}+cost_{10}\int_{x\sim D^-}{\amalg(f(x)\neq y)p(x)dx}</script><p><strong>代价曲线（cost curve）</strong>：</p>
-<p>p是样例为正例的概率，则</p>
-<p>横轴为正例概率代价：<script type="math/tex">P(+)cost=\frac{p\times cost_{01}}{p\times cost_{01}+(1-p)\times cost_{10}}</script></p>
-<p>纵轴为归一化代价：<script type="math/tex">cost_{norm}=\frac{FNR\times p\times cost_{01}+FPR\times (1-p)\times cost_{10}}{p\times cost_{01}+(1-p)\times cost_{10}}</script></p>
-<p><img src="/2023/06/05/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0%E4%B8%8E%E9%80%89%E6%8B%A9/代价曲线和期望总体代价.png" alt="代价曲线和期望总体代价"></p>
-<p>注：ROC曲线上的每一点对应了代价平面上的一条线段，取所有线段的下界，围成的面积即为在所有条件下学习器的期望总体代价。</p>
-<h1 id="2-4-比较检验"><a href="#2-4-比较检验" class="headerlink" title="2.4 比较检验"></a>2.4 比较检验</h1><p><strong>统计假设检验（hypothesis test）</strong>：验证所选模型在结构上、形式上、变化方向上能否代表客观情况。若在测试集上观察到学习器A比B好，那么基于假设检验的结果我们可以推断出A的泛化能力是否在统计意义上优于B，以及这个结论的把握有多大。</p>
-<h2 id="2-4-1-假设检验"><a href="#2-4-1-假设检验" class="headerlink" title="2.4.1 假设检验"></a>2.4.1 假设检验</h2><blockquote>
-<p><strong>假设检验五步骤：</strong></p>
-<p>Step1：根据实际问题要求提出原假设和备选假设</p>
-<p>Step2：选择一个合适的检验统计量，并确定拒绝域</p>
-<p>Step3：给定显著性水平<script type="math/tex">\alpha</script></p>
-<p>Step4：计算在该显著性水平下、原假设成立条件下检验统计量的具体值</p>
-<p>Step5：做出判断，若计算结果在拒绝域内则拒绝原假设，备选假设成立；否则原假设成立</p>
-</blockquote>
-<p><em>具体参见：<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_42468475/article/details/116240528?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522168597517916800180686762%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&amp;request_id=168597517916800180686762&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-1-116240528-null-null.142^v88^insert_down38v5,239^v2^insert_chatgpt&amp;utm_term=假设检验&amp;spm=1018.2226.3001.4187">假设检验及例题讲解</a></em></p>
-<h2 id="2-4-2-交叉验证t检验"><a href="#2-4-2-交叉验证t检验" class="headerlink" title="2.4.2 交叉验证t检验"></a>2.4.2 交叉验证t检验</h2><p><strong>k折交叉验证成对t检验（k-fold cross validation paired t-test）</strong>：对两个学习器A和B采用相同的k折交叉验证法，得到成对的测试错误率<script type="math/tex">\epsilon_1^A,\epsilon_2^A,...,\epsilon_k^A</script>和<script type="math/tex">\epsilon_1^B,\epsilon_2^B,...,\epsilon_k^B</script>，再对每对结果求差<script type="math/tex">\Delta_i=\epsilon_i^A+\epsilon_i^B</script>，最后求出差值<script type="math/tex">\Delta_1,\Delta_2,...,\Delta_k</script>的均值和方差，在显著性水平<script type="math/tex">\alpha</script>下，若变量<script type="math/tex">\tau_t=\lvert\sqrt{k}\mu/\sigma\rvert</script>小于临界值小于<script type="math/tex">t_{\alpha/2,k-1}</script>，则假设不能被拒绝，即认为两个学习器的性能相同；否则拒绝假设，即认为两个学习器的性能不同，且平均错误率较小的那个学习器性能更好。</p>
-<p>注：通常采用<script type="math/tex">5\times 2</script>交叉验证法</p>
-<h2 id="2-4-3-McNemar检验"><a href="#2-4-3-McNemar检验" class="headerlink" title="2.4.3 McNemar检验"></a>2.4.3 McNemar检验</h2><p><strong>列联表（contingency table）</strong>：</p>
-<p><img src="/2023/06/05/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0%E4%B8%8E%E9%80%89%E6%8B%A9/两个学习器分类差别的列联表.png" alt="两个学习器分类差别的列联表"></p>
-<p><strong>McNemar检验</strong>：考虑变量</p>
-<script type="math/tex; mode=display">
-\tau_{\chi^2}=\frac{(\lvert e_{01}-e_{10}\rvert -1)^2}{e_{01}+e_{10}}</script><p>服从自由度为1的卡方分布。给定显著度<script type="math/tex">\alpha</script>，若该变量值小于临界值<script type="math/tex">\chi_{\alpha}^2</script>则不能拒绝假设，即认为两个学习器的性能相同；否则拒绝假设，即认为两个学习器的性能不同，且平均错误率较小的那个学习器性能更好。</p>
-<h2 id="2-4-4-Friedman检验-与-Nemenyi后续检验"><a href="#2-4-4-Friedman检验-与-Nemenyi后续检验" class="headerlink" title="2.4.4 Friedman检验 与 Nemenyi后续检验"></a>2.4.4 Friedman检验 与 Nemenyi后续检验</h2><blockquote>
-<p>当有多个算法参与比较时，一种做法是在每个数据集上分别列出两两比较的结果，而在两两比较时可以采用前述方法；另一种方法更直接，即使用基于算法排序的Friedman检验。</p>
-</blockquote>
-<p><strong>Friedman检验</strong>：在N个数据集上对k个算法进行比较，首先使用留出法/交叉验证法得到每个算法在每个数据集上的测试结果，然后在每个数据集上根据测试性能由好到坏进行排序并赋序值1, 2, …（若性能相同则评分序值），之后求出每个算法的平均序值。设第i个算法的平均序值为<script type="math/tex">r_i</script>，其均值和方差分别为<script type="math/tex">(k+1)/2</script>和<script type="math/tex">(k^2-1)/12N</script>，考虑变量</p>
-<script type="math/tex; mode=display">
-\tau_F=\frac{(N-1)\tau_{\chi^2}}{N(k-2)-\tau_{\chi^2}}</script><script type="math/tex; mode=display">
-\tau_{\chi^2} = \frac{k-1}{k}\times\frac{12N}{k^2-1}\sum_{i=1}^{k}{\Big(r_i-\frac{k+1}{2}\Big)^2}=\frac{12N}{k(k+1)}{\sum_{i=1}^{k}{\Big(r_i^2}-\frac{k(k+1)^2}{4}\Big)}</script><p>服从自由度为k-1和(k-1)(N-1)的F分布。</p>
-<blockquote>
-<p>若“所有算法性能相同”的假设被拒绝，则说明算法的性能显著不同，这时需要进行“后续检验”（post-hoc test）来进一步区分各个算法，常用的有Nemeyi后续检验。</p>
-</blockquote>
-<p><strong>Nemeyi后续检验</strong>：计算出平均序值差别的临界值域</p>
-<script type="math/tex; mode=display">
-CD=q_\alpha\sqrt{\frac{k(k+1)}{6N}}</script><p>若两个算法的平均序值之差超过了临界值域，则认为两个算法的性能显著不同；否则则认为两个算法的性能没有显著差别。</p>
-<h1 id="2-5-偏差和方差"><a href="#2-5-偏差和方差" class="headerlink" title="2.5 偏差和方差"></a>2.5 偏差和方差</h1><p><strong>偏差-方差分解（bias-variance decomposition）</strong>：解释学习算法泛化性能的重要工具，试图对学习算法的期望泛化错误率进行拆解。</p>
-<p><strong>方差（variance）</strong>：模型多次输出和平均值之间的差的期望（反映模型稳定性）</p>
-<script type="math/tex; mode=display">
-var(x)=E_D\Big[(f(x;D)-\bar f(x))^2\Big]</script><p><strong>偏差（bias）</strong>：期望输出与真实标记的差别（反映模型本身拟合能力）</p>
-<script type="math/tex; mode=display">
-bias^2(x)=(\bar f(x)-y)^2</script><p><strong>噪声</strong>：</p>
-<script type="math/tex; mode=display">
-\epsilon^2=E_D\Big[(y_D-y)^2\Big]</script><p><strong>泛化误差</strong>：可以分解为偏差、方差与噪声之和</p>
-<script type="math/tex; mode=display">
-E(f;D)=bias^2(x)+var(x)+\epsilon^2</script><p><strong>偏差-方差窘境（bias-variance dilemma）</strong>：偏差和方差是有冲突的</p>
-<p><img src="/2023/06/05/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0%E4%B8%8E%E9%80%89%E6%8B%A9/泛化误差与偏差、方差的关系.png" alt="泛化误差与偏差、方差的关系"></p>
-<p>注：训练程度低时，模型出现欠拟合；训练程度高时，模型出现过拟合。关键在于找到泛化误差曲线的最小值点，该点所对应的训练程度为最优。</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -2368,7 +2372,7 @@ E(f;D)=bias^2(x)+var(x)+\epsilon^2</script><p><strong>偏差-方差窘境（bias
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-count">14</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -2419,7 +2423,7 @@ E(f;D)=bias^2(x)+var(x)+\epsilon^2</script><p><strong>偏差-方差窘境（bias
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共20.9k字</span>
+  <span class="post-count">博客全站共24.3k字</span>
 </div>
         
 

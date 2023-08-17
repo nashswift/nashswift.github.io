@@ -192,6 +192,273 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/06/05/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0%E4%B8%8E%E9%80%89%E6%8B%A9/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="nashswift">
+      <meta itemprop="description" content="What matters is not your ability, but your choice.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="长野原烟花店">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/06/05/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0%E4%B8%8E%E9%80%89%E6%8B%A9/" class="post-title-link" itemprop="url">周志华《机器学习》（AKA：西瓜书）笔记整理-第二章-模型评估与选择</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-06-05 13:09:22" itemprop="dateCreated datePublished" datetime="2023-06-05T13:09:22+08:00">2023-06-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-06-09 11:22:03" itemprop="dateModified" datetime="2023-06-09T11:22:03+08:00">2023-06-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ML-study/" itemprop="url" rel="index"><span itemprop="name">ML study</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="2-1-经验误差与过拟合"><a href="#2-1-经验误差与过拟合" class="headerlink" title="2.1 经验误差与过拟合"></a>2.1 经验误差与过拟合</h1><p><strong>错误率（error rate）</strong>：分类错误的样本数占样本总数的比例。如果在m个样本中有a个样本分类错误，则错误率为$E = \frac{a}{m}$ 。</p>
+<p><strong>精度（accuracy）</strong>：精度=1-错误率。<br><strong>误差（error）</strong>：学习器的实际预测输出与样本的真实输出之间的差异。<br><strong>训练误差（training error）/经验误差（empirical error）</strong>：学习器在训练集上的误差。<br><strong>泛化误差（generalization error）</strong>：学习器在新样本上的误差（我们希望得到泛化误差小的学习器）。</p>
+<p><strong>过拟合</strong>：在训练集上表现很好，但在测试集上表现不好（学习能力太强，不可避免，只能缓解）。<br><strong>欠拟合</strong>：在训练集和测试集上表现都不好（学习能力太弱，加大学习）。</p>
+<blockquote>
+<p>解决过拟合的方法：</p>
+<p>​    1.降低参数空间的维度（如剪枝、权重共享等）<br>​    2.降低每个参数维度上的有效规模（如正则化、早停法、训练更多数据等）</p>
+<p>解决欠拟合的方法：</p>
+<p>​    1.增加新的特征或多项式特征<br>​    2.使用非线性模型等更复杂的模型<br>​    3.使用集成学习方法，如Bagging等</p>
+</blockquote>
+<p><strong>补充</strong>：</p>
+<p>P类问题（Polynominal problem）：存在多项式时间算法问题。</p>
+<p>NP类问题（Nondeterministic Polynominal-hard problem）：能在多项式时间内验证得出一个正确的解。</p>
+<p>NP难问题（NP-hard problem）：无法得到多项式级的算法。</p>
+<h1 id="2-2-评估方法"><a href="#2-2-评估方法" class="headerlink" title="2.2 评估方法"></a>2.2 评估方法</h1><p><strong>测试集（testing set）</strong>：来测试学习器对新样本的判别能力。</p>
+<ul>
+<li>从样本真实分布中独立同分布（iid）采样而得</li>
+<li>尽可能与训练集互斥</li>
+</ul>
+<p><strong>测试误差（testing error）</strong>：作为泛化误差的近似。</p>
+<h2 id="2-2-1-留出法（hold-out）"><a href="#2-2-1-留出法（hold-out）" class="headerlink" title="2.2.1 留出法（hold-out）"></a>2.2.1 留出法（hold-out）</h2><p>直接将数据集D划分为两个互斥的集合，其中一个集合作为训练集S（$70\%-80\% $），另一个作为测试集T（$20\%-30\%$）。</p>
+<blockquote>
+<p>以二分类任务为例子，假定D中有1000个样本，划分后S包含700个样本T包含300个样本，用S进行训练之后，若模型在T上有90个样本分类错误，那么错误率为$(90/300)\times100\% = 30\%$，相应的精度为$1-30\%= 70\%$。</p>
+</blockquote>
+<p><strong>注意</strong>：单次使用留出法时得到的估计结果往往不够稳定可靠，因此一般要采用若干次随机划分、重复进行实验评估后取平均值作为留出法的评估结果。</p>
+<h2 id="2-2-2-交叉验证法（cross-validation）"><a href="#2-2-2-交叉验证法（cross-validation）" class="headerlink" title="2.2.2 交叉验证法（cross validation）"></a>2.2.2 交叉验证法（cross validation）</h2><p>将数据集D划分为k个大小相似的互斥子集，每个子集都从D中通过分层残阳得到（尽可能保持数据分布一致性），然后每次用k-1个子集的并集作为训练集，余下的那个子集作为测试集，最终返回的是k个测试结果的均值。</p>
+<ul>
+<li><p><strong>k折交叉验证（k-fold cross validation）</strong>：k最常用的取值是10，此外还常用的有5、20等。</p>
+<p><img src="/2023/06/05/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0%E4%B8%8E%E9%80%89%E6%8B%A9/10折交叉验证示意图.png" alt="10折交叉验证示意图"></p>
+<center>10折交叉验证示意图</center>
+
+<p>为减少因样本划分不同而引入的差别，k折交叉验证通常要随机使用不同的划分重复p次，最终评估结果是折p次k折交叉验证结果的均值。</p>
+</li>
+<li><p><strong>留一法（Leave-One-Out，简称LOO）</strong>：k=m，m为样本个数，数据集较大时不推荐使用。</p>
+</li>
+</ul>
+<h2 id="2-2-3-自助法（bootstrapping）"><a href="#2-2-3-自助法（bootstrapping）" class="headerlink" title="2.2.3 自助法（bootstrapping）"></a>2.2.3 自助法（bootstrapping）</h2><p>直接以自助手采样（bootstrap sampling）为基础。在包含m个样本的数据集D中<strong>有放回</strong>地采样m次得到数据集D’，初始数据集D中约有36.8%的样本未出现在采样数据集D’中，于是我们把D’作为训练集，D\D‘作为测试集。这样，我们仍有数据总量约1/3的、没在训练集中出现的样本用于测试，这样的测试结果也叫做<strong>“包外估计”（out-of-bag estimate）</strong>。</p>
+<p><strong>缺点</strong>：自助法产生的数据集改变了初始数据集的分布，会引入估计偏差。</p>
+<h2 id="2-2-4-调参与最终模型"><a href="#2-2-4-调参与最终模型" class="headerlink" title="2.2.4 调参与最终模型"></a>2.2.4 调参与最终模型</h2><p><strong>调参（paraemeter tuning）</strong>：对算法的参数进行设定。</p>
+<p><strong>验证集（validation set）</strong>：将训练数据另外划分为训练集和验证集，基于验证集上的性能进行模型参数选择和调参。</p>
+<h1 id="2-3-性能度量"><a href="#2-3-性能度量" class="headerlink" title="2.3 性能度量"></a>2.3 性能度量</h1><p><strong>性能度量（performance measure）</strong>：衡量模型泛化能力的评价标准（相对的）。</p>
+<p>常用的性能度量——<strong>均方误差（mean squared error）</strong>:</p>
+<ul>
+<li><p>离散：</p>
+<script type="math/tex; mode=display">
+E(f;D) = \frac{1}{m}\sum_{i=1}^{m}{(f(x_{i})-y_{i})^2}</script></li>
+<li><p>连续：</p>
+<script type="math/tex; mode=display">
+E(f;D)=\int_{x\sim D}{(f(x)-y)^2}p(x)dx</script></li>
+</ul>
+<h2 id="2-3-1-错误率与精度"><a href="#2-3-1-错误率与精度" class="headerlink" title="2.3.1 错误率与精度"></a>2.3.1 错误率与精度</h2><p><strong>错误率</strong>：分类错误的样本数占样本总数的比例。</p>
+<ul>
+<li><p>离散：</p>
+<script type="math/tex; mode=display">
+E(f;D)=\frac{1}{m}\sum_{i=1}^{m}{\amalg(f(x_i)\neq y_i)}</script></li>
+<li><p>连续：</p>
+<script type="math/tex; mode=display">
+E(f;D)=\int_{x\sim D}{\amalg(f(x)\neq y)p(x)dx}</script></li>
+</ul>
+<p><strong>精度</strong>：分类正确的样本数占样本总数的比例。</p>
+<ul>
+<li><p>离散：</p>
+<script type="math/tex; mode=display">
+acc(f;D)=\frac{1}{m}\sum_{i=1}^{m}{\amalg(f(x_i)=y_i)}=1-E(f;D)</script></li>
+<li><p>连续：</p>
+<script type="math/tex; mode=display">
+acc(f;D)=\int_{x\sim D}{\amalg(f(x)=y)p(x)dx}=1-E(f;D)</script></li>
+</ul>
+<h2 id="2-3-2-查准率、查全率与F1"><a href="#2-3-2-查准率、查全率与F1" class="headerlink" title="2.3.2 查准率、查全率与F1"></a>2.3.2 查准率、查全率与F1</h2><ul>
+<li><p><strong>真正例（true positive）</strong>：TP</p>
+</li>
+<li><p><strong>假正例（false positive）</strong>：FP</p>
+</li>
+<li><p><strong>真反例（true negative）</strong>：TN</p>
+</li>
+<li><p><strong>假反例（false negative）</strong>：FN</p>
+</li>
+</ul>
+<p><strong><em>注：TP + FP + TN + FN = 样例总数</em></strong></p>
+<p><img src="/2023/06/05/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0%E4%B8%8E%E9%80%89%E6%8B%A9/分类混淆矩阵.png" alt="分类混淆矩阵"></p>
+<p><strong>查准率（precision）</strong>：在所有预测的正例中真正例的比例（“所查有多准”）。</p>
+<script type="math/tex; mode=display">
+P = \frac{TP}{TP+FP}</script><p>注：分母TP+FP为预测为真的总数</p>
+<p><strong>查全率（recall）</strong>：所有的正例中有多少被查出来了（“所查有多全”）。</p>
+<script type="math/tex; mode=display">
+R = \frac{TP}{TP+FN}</script><p>注：分母TP+FN为实际为真的总数</p>
+<p><strong>P-R曲线</strong>：查准率和查全率是两个互斥的变量，查全率高时查准率往往偏低，查准率高时查全率往往偏低。</p>
+<p><img src="/2023/06/05/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0%E4%B8%8E%E9%80%89%E6%8B%A9/P-R曲线和平衡点示意图.png" alt="P-R曲线和平衡点示意图"></p>
+<p><strong>度量学习器优劣的方法：</strong></p>
+<ol>
+<li><p>直接法：若一个学习器的P-R曲线被另一个学习器的曲线完全“包住”，则可以断言后者的性能优于前者</p>
+</li>
+<li><p>面积法：比较两个学习器P-R曲线下面积的大小，面积大的曲线性能更好</p>
+</li>
+<li><p>平衡点法：平衡点（BEP）是“查准率=查全率”时的取值，平衡点更大者性能更好</p>
+</li>
+<li><p>F1度量：</p>
+<script type="math/tex; mode=display">
+F1 = \frac{2\times P\times R}{P+R}</script></li>
+<li><p>F1度量的更一般形式 ——<script type="math/tex">F_\beta</script>度量：</p>
+<script type="math/tex; mode=display">
+F_\beta=\frac{(1+\beta^2)\times P\times R}{(\beta^2\times P)+R}</script><p>注：<script type="math/tex">\beta=1</script>时退化为F1度量，<script type="math/tex">\beta>1</script>时查全率影响更大，<script type="math/tex">\beta<1</script>时查准率影响更大</p>
+</li>
+<li><p>宏查准率（macro-P）、宏查全率（macro-R）、宏F1（macro-F1）：先计算P、R、F1，再取平均</p>
+</li>
+<li><p>微查准率（micro-P）、微查全率（micro-R）、微F1（micro-F1）：先取平均，再计算P、R、F1</p>
+<p>注：方法6和方法7性能差别不大</p>
+</li>
+</ol>
+<h2 id="2-3-3-ROC和AUC"><a href="#2-3-3-ROC和AUC" class="headerlink" title="2.3.3 ROC和AUC"></a>2.3.3 ROC和AUC</h2><p>很多学习器是从测试样本产生一个实值或概率预测，然后将这个预测值与一个分类阈值（threshold）比较，若大于阈值则为正类，否则为反类。若更重视查准率，则可以选择排序中靠前的位置截断；若更重视查全率，则可以选择靠后的位置截断。因此，<strong>排序本身的质量好坏，体现了综合考虑学习器在不同任务下期望泛化性能的好坏</strong>。</p>
+<p><strong>ROC（受试者工作特征Receiver Operating Characteristic）曲线</strong>：</p>
+<p><img src="/2023/06/05/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0%E4%B8%8E%E9%80%89%E6%8B%A9/ROC曲线和AUC.png" alt="ROC曲线和AUC"></p>
+<blockquote>
+<p><strong>ROC曲线理解：</strong></p>
+<p>真正例率TPR：抓住坏人的比例</p>
+<p>假正例率FPR：误伤好人的比例</p>
+<p>1处：好人全放走，坏人全抓到（理想情况）</p>
+<p>2处：不论好人坏人全部抓</p>
+<p>3处：好人全抓了，坏人全放走（最差情况）</p>
+<p>4处：不论好人坏人全部放</p>
+<p><strong>因此ROC曲线越接近于点（0, 1）越好，越接近对角线（随机猜测）越差。</strong></p>
+</blockquote>
+<p><strong>AUC（Area Under ROC Curve）</strong>：ROC曲线下的面积（学习器比较的合理判据）。</p>
+<ul>
+<li><p>几何法：</p>
+<script type="math/tex; mode=display">
+AUC=\frac{1}{2}\sum_{i=1}^{m-1}{(x_{i+1}-x_i)(y_{i+1}+y_i)}</script></li>
+<li><p>损失法：</p>
+<script type="math/tex; mode=display">
+AUC = 1-l_{rank}</script><script type="math/tex; mode=display">
+l_{rank}=\frac{1}{m^+\times m^-}\sum_{x^+\in D^+}\sum_{x^-\in D^-}\Big(\amalg(f(x^+)<f(x^-))+\frac{1}{2}\amalg(f(x^+)=f(x^-))\Big)</script><p>注：<script type="math/tex">l_{rank}</script>是排序损失，对应ROC曲线之上的面积。考虑每一对正例和反例，若正例的预测值小于反例，则记1个“罚分”；若相等，则记0.5个“罚分”。</p>
+</li>
+</ul>
+<h2 id="2-3-4-代价敏感错误率与代价曲线"><a href="#2-3-4-代价敏感错误率与代价曲线" class="headerlink" title="2.3.4 代价敏感错误率与代价曲线"></a>2.3.4 代价敏感错误率与代价曲线</h2><p><strong>非均等代价（unequal cost）</strong>：把第i类的样本预测为第j类的代价和把第j类的样本预测为第i类的代价不相等（<script type="math/tex">cost_{ij}\neq cost_{ji}</script>）。</p>
+<p><img src="/2023/06/05/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0%E4%B8%8E%E9%80%89%E6%8B%A9/二分类代价矩阵.png" alt="二分类代价矩阵"></p>
+<p>注：<script type="math/tex">cost_{ii}=0</script>表示分类正确的代价为0</p>
+<p><strong>代价敏感错误率（cost-sesitive error rate）</strong>：</p>
+<ul>
+<li>离散：</li>
+</ul>
+<script type="math/tex; mode=display">
+E(f;D;cost)=\frac{1}{m}\Big(\sum_{x_i\in D^+}\amalg(f(x_i)\neq y_i)\times cost_{01}+\sum_{x_i\in D^-}\amalg(f(x_i)\neq y_i)\times cost_{10}\Big)</script><ul>
+<li>连续：</li>
+</ul>
+<script type="math/tex; mode=display">
+E(f;D;cost)=cost_{01}\int_{x\sim D^+}{\amalg(f(x)\neq y)p(x)dx}+cost_{10}\int_{x\sim D^-}{\amalg(f(x)\neq y)p(x)dx}</script><p><strong>代价曲线（cost curve）</strong>：</p>
+<p>p是样例为正例的概率，则</p>
+<p>横轴为正例概率代价：<script type="math/tex">P(+)cost=\frac{p\times cost_{01}}{p\times cost_{01}+(1-p)\times cost_{10}}</script></p>
+<p>纵轴为归一化代价：<script type="math/tex">cost_{norm}=\frac{FNR\times p\times cost_{01}+FPR\times (1-p)\times cost_{10}}{p\times cost_{01}+(1-p)\times cost_{10}}</script></p>
+<p><img src="/2023/06/05/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0%E4%B8%8E%E9%80%89%E6%8B%A9/代价曲线和期望总体代价.png" alt="代价曲线和期望总体代价"></p>
+<p>注：ROC曲线上的每一点对应了代价平面上的一条线段，取所有线段的下界，围成的面积即为在所有条件下学习器的期望总体代价。</p>
+<h1 id="2-4-比较检验"><a href="#2-4-比较检验" class="headerlink" title="2.4 比较检验"></a>2.4 比较检验</h1><p><strong>统计假设检验（hypothesis test）</strong>：验证所选模型在结构上、形式上、变化方向上能否代表客观情况。若在测试集上观察到学习器A比B好，那么基于假设检验的结果我们可以推断出A的泛化能力是否在统计意义上优于B，以及这个结论的把握有多大。</p>
+<h2 id="2-4-1-假设检验"><a href="#2-4-1-假设检验" class="headerlink" title="2.4.1 假设检验"></a>2.4.1 假设检验</h2><blockquote>
+<p><strong>假设检验五步骤：</strong></p>
+<p>Step1：根据实际问题要求提出原假设和备选假设</p>
+<p>Step2：选择一个合适的检验统计量，并确定拒绝域</p>
+<p>Step3：给定显著性水平<script type="math/tex">\alpha</script></p>
+<p>Step4：计算在该显著性水平下、原假设成立条件下检验统计量的具体值</p>
+<p>Step5：做出判断，若计算结果在拒绝域内则拒绝原假设，备选假设成立；否则原假设成立</p>
+</blockquote>
+<p><em>具体参见：<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_42468475/article/details/116240528?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522168597517916800180686762%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&amp;request_id=168597517916800180686762&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-1-116240528-null-null.142^v88^insert_down38v5,239^v2^insert_chatgpt&amp;utm_term=假设检验&amp;spm=1018.2226.3001.4187">假设检验及例题讲解</a></em></p>
+<h2 id="2-4-2-交叉验证t检验"><a href="#2-4-2-交叉验证t检验" class="headerlink" title="2.4.2 交叉验证t检验"></a>2.4.2 交叉验证t检验</h2><p><strong>k折交叉验证成对t检验（k-fold cross validation paired t-test）</strong>：对两个学习器A和B采用相同的k折交叉验证法，得到成对的测试错误率<script type="math/tex">\epsilon_1^A,\epsilon_2^A,...,\epsilon_k^A</script>和<script type="math/tex">\epsilon_1^B,\epsilon_2^B,...,\epsilon_k^B</script>，再对每对结果求差<script type="math/tex">\Delta_i=\epsilon_i^A+\epsilon_i^B</script>，最后求出差值<script type="math/tex">\Delta_1,\Delta_2,...,\Delta_k</script>的均值和方差，在显著性水平<script type="math/tex">\alpha</script>下，若变量<script type="math/tex">\tau_t=\lvert\sqrt{k}\mu/\sigma\rvert</script>小于临界值小于<script type="math/tex">t_{\alpha/2,k-1}</script>，则假设不能被拒绝，即认为两个学习器的性能相同；否则拒绝假设，即认为两个学习器的性能不同，且平均错误率较小的那个学习器性能更好。</p>
+<p>注：通常采用<script type="math/tex">5\times 2</script>交叉验证法</p>
+<h2 id="2-4-3-McNemar检验"><a href="#2-4-3-McNemar检验" class="headerlink" title="2.4.3 McNemar检验"></a>2.4.3 McNemar检验</h2><p><strong>列联表（contingency table）</strong>：</p>
+<p><img src="/2023/06/05/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0%E4%B8%8E%E9%80%89%E6%8B%A9/两个学习器分类差别的列联表.png" alt="两个学习器分类差别的列联表"></p>
+<p><strong>McNemar检验</strong>：考虑变量</p>
+<script type="math/tex; mode=display">
+\tau_{\chi^2}=\frac{(\lvert e_{01}-e_{10}\rvert -1)^2}{e_{01}+e_{10}}</script><p>服从自由度为1的卡方分布。给定显著度<script type="math/tex">\alpha</script>，若该变量值小于临界值<script type="math/tex">\chi_{\alpha}^2</script>则不能拒绝假设，即认为两个学习器的性能相同；否则拒绝假设，即认为两个学习器的性能不同，且平均错误率较小的那个学习器性能更好。</p>
+<h2 id="2-4-4-Friedman检验-与-Nemenyi后续检验"><a href="#2-4-4-Friedman检验-与-Nemenyi后续检验" class="headerlink" title="2.4.4 Friedman检验 与 Nemenyi后续检验"></a>2.4.4 Friedman检验 与 Nemenyi后续检验</h2><blockquote>
+<p>当有多个算法参与比较时，一种做法是在每个数据集上分别列出两两比较的结果，而在两两比较时可以采用前述方法；另一种方法更直接，即使用基于算法排序的Friedman检验。</p>
+</blockquote>
+<p><strong>Friedman检验</strong>：在N个数据集上对k个算法进行比较，首先使用留出法/交叉验证法得到每个算法在每个数据集上的测试结果，然后在每个数据集上根据测试性能由好到坏进行排序并赋序值1, 2, …（若性能相同则评分序值），之后求出每个算法的平均序值。设第i个算法的平均序值为<script type="math/tex">r_i</script>，其均值和方差分别为<script type="math/tex">(k+1)/2</script>和<script type="math/tex">(k^2-1)/12N</script>，考虑变量</p>
+<script type="math/tex; mode=display">
+\tau_F=\frac{(N-1)\tau_{\chi^2}}{N(k-2)-\tau_{\chi^2}}</script><script type="math/tex; mode=display">
+\tau_{\chi^2} = \frac{k-1}{k}\times\frac{12N}{k^2-1}\sum_{i=1}^{k}{\Big(r_i-\frac{k+1}{2}\Big)^2}=\frac{12N}{k(k+1)}{\sum_{i=1}^{k}{\Big(r_i^2}-\frac{k(k+1)^2}{4}\Big)}</script><p>服从自由度为k-1和(k-1)(N-1)的F分布。</p>
+<blockquote>
+<p>若“所有算法性能相同”的假设被拒绝，则说明算法的性能显著不同，这时需要进行“后续检验”（post-hoc test）来进一步区分各个算法，常用的有Nemeyi后续检验。</p>
+</blockquote>
+<p><strong>Nemeyi后续检验</strong>：计算出平均序值差别的临界值域</p>
+<script type="math/tex; mode=display">
+CD=q_\alpha\sqrt{\frac{k(k+1)}{6N}}</script><p>若两个算法的平均序值之差超过了临界值域，则认为两个算法的性能显著不同；否则则认为两个算法的性能没有显著差别。</p>
+<h1 id="2-5-偏差和方差"><a href="#2-5-偏差和方差" class="headerlink" title="2.5 偏差和方差"></a>2.5 偏差和方差</h1><p><strong>偏差-方差分解（bias-variance decomposition）</strong>：解释学习算法泛化性能的重要工具，试图对学习算法的期望泛化错误率进行拆解。</p>
+<p><strong>方差（variance）</strong>：模型多次输出和平均值之间的差的期望（反映模型稳定性）</p>
+<script type="math/tex; mode=display">
+var(x)=E_D\Big[(f(x;D)-\bar f(x))^2\Big]</script><p><strong>偏差（bias）</strong>：期望输出与真实标记的差别（反映模型本身拟合能力）</p>
+<script type="math/tex; mode=display">
+bias^2(x)=(\bar f(x)-y)^2</script><p><strong>噪声</strong>：</p>
+<script type="math/tex; mode=display">
+\epsilon^2=E_D\Big[(y_D-y)^2\Big]</script><p><strong>泛化误差</strong>：可以分解为偏差、方差与噪声之和</p>
+<script type="math/tex; mode=display">
+E(f;D)=bias^2(x)+var(x)+\epsilon^2</script><p><strong>偏差-方差窘境（bias-variance dilemma）</strong>：偏差和方差是有冲突的</p>
+<p><img src="/2023/06/05/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0%E4%B8%8E%E9%80%89%E6%8B%A9/泛化误差与偏差、方差的关系.png" alt="泛化误差与偏差、方差的关系"></p>
+<p>注：训练程度低时，模型出现欠拟合；训练程度高时，模型出现过拟合。关键在于找到泛化误差曲线的最小值点，该点所对应的训练程度为最优。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2023/06/05/%E5%91%A8%E5%BF%97%E5%8D%8E%E3%80%8A%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E3%80%8B%EF%BC%88AKA%EF%BC%9A%E8%A5%BF%E7%93%9C%E4%B9%A6%EF%BC%89%E7%AC%94%E8%AE%B0%E6%95%B4%E7%90%86-%E7%AC%AC%E4%B8%80%E7%AB%A0-%E7%BB%AA%E8%AE%BA/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -481,7 +748,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-count">14</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -532,7 +799,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共20.9k字</span>
+  <span class="post-count">博客全站共24.3k字</span>
 </div>
         
 
@@ -590,6 +857,61 @@
   
 
   
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
 
   
 
